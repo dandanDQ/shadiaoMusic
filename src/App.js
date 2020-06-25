@@ -25,9 +25,17 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import Piano from './Piano.js';
 const App: () => React$Node = () => {
+  function onPlay(note,midi){
+    console.log("开始啦")
+    console.log(note,"__",midi)
+  };
   return (
     <>
+    <Piano
+        onPlayNoteInput={onPlay}
+        onStopNoteInput={onPlay}/>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
         <View style={styles.view}>
@@ -56,6 +64,9 @@ const App: () => React$Node = () => {
           </View>
         </View>
         </View>
+        <Piano
+        onPlayNoteInput={onPlay}
+        onStopNoteInput={onPlay}/>
       </SafeAreaView>
     </>
   );
