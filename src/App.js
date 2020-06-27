@@ -33,8 +33,10 @@ import Piano from './piano/Piano';
 import Audio from './audio/audio'
 import Drum from './drum/drum'
 import Video from './video/video'
+import Record from './record/record'
+import GenMusic from './genMusic/genMusic'
 const Sound = require('react-native-sound');
-
+const genMusic = new GenMusic('dq')
 export default class App extends Component{
   constructor(props){
     super(props);
@@ -62,6 +64,14 @@ export default class App extends Component{
   showVideo = ()=>{
     console.log("hello")
     this.setState({isShowVideo: !this.state.isShowVideo})
+  }
+  genMusic = ()=> {
+    let notes =[]
+    for(let i=1;i<100;i++){
+      let note=genMusic.getNote(1,13)
+      notes.push(note)
+    }
+    genMusic.genMusic(notes)
   }
 
   onPlay(note,midi){
@@ -91,8 +101,6 @@ var whoosh = new Sound(file, (error) => {
 });
   }
   render(){
-
-    
     return (
       <>
         <StatusBar barStyle="dark-content" />
@@ -123,12 +131,29 @@ var whoosh = new Sound(file, (error) => {
                   title='钢琴'
                   onPress={this.showPiano}></Button>
                 </View>
+
+                <View style={styles.buttonStyle}>
+                  <Button
+                  title='生成音乐'
+                  onPress={this.genMusic}></Button>
+                </View>
+
             </View>
           </View>
 
           
           <Modal
-          visible={this.state.isShowPiano}>     
+          visible={this.state.isShowPiano}>    
+          <Record/> 
+            <Piano
+            onPlayNoteInput={this.onPlay}
+            onStopNoteInput={this.onPlay}/>
+            <Piano
+            onPlayNoteInput={this.onPlay}
+            onStopNoteInput={this.onPlay}/>
+            <Piano
+            onPlayNoteInput={this.onPlay}
+            onStopNoteInput={this.onPlay}/>
             <Piano
             onPlayNoteInput={this.onPlay}
             onStopNoteInput={this.onPlay}/>

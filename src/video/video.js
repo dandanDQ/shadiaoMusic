@@ -1,8 +1,8 @@
 //sdq的视频提取
 import React, { Component } from 'react'
 import Record from '../record/record'
-
-import {View,Text} from 'react-native'
+import {CameraScreen} from './camera'
+import {View,Text,StyleSheet} from 'react-native'
 class Video extends Component {
     constructor(props){
         super(props);
@@ -12,12 +12,24 @@ class Video extends Component {
     }
     render(){
         return (
-            <View>
+            <View style={styles.view}>
                 <Record/>
                 <Text>视频提取</Text>
+                <CameraScreen/>
             </View>
         )
     }
 }
 
 export default Video
+
+
+const styles = StyleSheet.create({
+    view: {
+        backgroundColor: '#fdf2dc',
+        flex:1,
+        borderRadius:5,
+        padding:2,
+    },
+  });
+  

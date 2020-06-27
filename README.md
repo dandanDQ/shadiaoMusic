@@ -8,5 +8,6 @@ A android app to create music for fun.
 npm run install
 react-native link react-native-audio
 react-native link react-native-sound
+react-native link react-native-camera
 npm run android
 ```

@@ -81,6 +81,8 @@ target 'shadiaoMusic' do
 
   pod 'RNAudio', :path => '../node_modules/react-native-audio'
 
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
   target 'shadiaoMusicTests' do
     inherit! :complete
     # Pods for testing
