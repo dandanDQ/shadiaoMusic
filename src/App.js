@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React,{Component} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,6 +15,10 @@ import {
   Text,
   StatusBar,
   Button,
+  Modal,
+  NativeModules,
+  NativeEventEmitter,
+  Platform
 } from 'react-native';
 
 import {
@@ -25,51 +29,140 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import Piano from './Piano.js';
-const App: () => React$Node = () => {
-  function onPlay(note,midi){
+import Piano from './piano/Piano';
+import Audio from './audio/audio'
+import Drum from './drum/drum'
+import Video from './video/video'
+const Sound = require('react-native-sound');
+
+export default class App extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      isShowPiano:false,
+      isShowAudio:false,
+      isShowDrum:false,
+      isShowVideo:false,
+    }
+  }
+  
+  
+  showPiano = ()=>{
+    console.log("hello")
+    this.setState({isShowPiano: !this.state.isShowPiano})
+  }
+  showAudio = ()=>{
+    console.log("hello")
+    this.setState({isShowAudio: !this.state.isShowAudio})
+  }
+  showDrum = ()=>{
+    console.log("hello")
+    this.setState({isShowDrum: !this.state.isShowDrum})
+  }
+  showVideo = ()=>{
+    console.log("hello")
+    this.setState({isShowVideo: !this.state.isShowVideo})
+  }
+
+  onPlay(note,midi){
     console.log("开始啦")
     console.log(note,"__",midi)
-  };
-  return (
-    <>
-    <Piano
-        onPlayNoteInput={onPlay}
-        onStopNoteInput={onPlay}/>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <View style={styles.view}>
-          <Text style={styles.headerText}>Shadiao Music</Text>
-        <View style={styles.buttonsWrapper}>
-          <View style={styles.buttonStyle}>
-          <Button
-          title='摄像头'
-          ></Button>
-           </View>
-          <View style={styles.buttonStyle}>
-          <Button
-          title='麦克风'></Button>
+    Sound.setCategory('Playback');
+    // Load the sound file 'whoosh.mp3' from the app bundle
+// See notes below about preloading sounds within initialization code below.
+
+let file=require("./piano/midi/Alert.mp3")
+var whoosh = new Sound(file, (error) => {
+  if (error) {
+    console.log('failed to load the sound', error);
+    return;
+  }
+  // loaded successfully
+  console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
+
+  // Play the sound with an onEnd callback
+  whoosh.play((success) => {
+    if (success) {
+      console.log('successfully finished playing');
+    } else {
+      console.log('playback failed due to audio decoding errors');
+    }
+  });
+});
+  }
+  render(){
+
+    
+    return (
+      <>
+        <StatusBar barStyle="dark-content" />
+          <View style={styles.view}>
+            <Text style={styles.headerText}>Shadiao Music</Text>
+            <View style={styles.buttonsWrapper}>
+                <View style={styles.buttonStyle}>
+                  <Button
+                  title='视频提取'
+                  onPress={this.showVideo}
+                  ></Button>
+                </View>
+
+                <View style={styles.buttonStyle}>
+                  <Button
+                  title='音频提取'
+                  onPress={this.showAudio}></Button>
+                </View>
+
+                <View style={styles.buttonStyle}>
+                  <Button
+                  title='重力鼓点'
+                  onPress={this.showDrum}></Button>
+                </View>
+        
+                <View style={styles.buttonStyle}>
+                  <Button
+                  title='钢琴'
+                  onPress={this.showPiano}></Button>
+                </View>
+            </View>
           </View>
-          <View style={styles.buttonStyle}>
-          <Button
-          title='陀螺仪'></Button>
-          </View>
-          <View style={styles.buttonStyle}>
-          <Button
-          title='节拍速度'></Button>
-          </View>
-          <View style={styles.buttonStyle}>
-          <Button
-          title='生成音乐'></Button>
-          </View>
-        </View>
-        </View>
-        <Piano
-        onPlayNoteInput={onPlay}
-        onStopNoteInput={onPlay}/>
-      </SafeAreaView>
-    </>
-  );
+
+          
+          <Modal
+          visible={this.state.isShowPiano}>     
+            <Piano
+            onPlayNoteInput={this.onPlay}
+            onStopNoteInput={this.onPlay}/>
+            <Button 
+            title="返回"
+            onPress={this.showPiano}></Button>
+         </Modal>
+
+          <Modal
+          visible={this.state.isShowAudio}>     
+              <Audio />
+              <Button 
+              title="返回"
+              onPress={this.showAudio}></Button>
+          </Modal>
+
+          <Modal
+          visible={this.state.isShowDrum}>     
+              <Drum />
+              <Button 
+              title="返回"
+              onPress={this.showDrum}></Button>
+          </Modal>
+
+          <Modal
+          visible={this.state.isShowVideo}>     
+              <Video />
+              <Button 
+              title="返回"
+              onPress={this.showVideo}></Button>
+          </Modal>
+      </>
+      );
+    }
 };
 
 const styles = StyleSheet.create({
@@ -94,4 +187,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default App;
+
