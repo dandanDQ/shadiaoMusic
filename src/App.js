@@ -18,7 +18,9 @@ import {
   Modal,
   NativeModules,
   NativeEventEmitter,
-  Platform
+  Platform,
+  TouchableHighlight,
+  Image
 } from 'react-native';
 
 import {
@@ -29,13 +31,14 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import Piano from './piano/Piano';
 import Audio from './audio/audio'
 import Drum from './drum/drum'
 import Video from './video/video'
-import Record from './record/record'
 import GenMusic from './genMusic/genMusic'
-const Sound = require('react-native-sound');
+import Piano from './piano/Piano'
+import Record from './record/record'
+
+const Sound=require('react-native-sound')
 const genMusic = new GenMusic('dq')
 export default class App extends Component{
   constructor(props){
@@ -65,6 +68,7 @@ export default class App extends Component{
     console.log("hello")
     this.setState({isShowVideo: !this.state.isShowVideo})
   }
+  
   genMusic = ()=> {
     let notes =[]
     for(let i=1;i<100;i++){
@@ -79,87 +83,116 @@ export default class App extends Component{
     console.log(note,"__",midi)
     Sound.setCategory('Playback');
     // Load the sound file 'whoosh.mp3' from the app bundle
-// See notes below about preloading sounds within initialization code below.
+    // See notes below about preloading sounds within initialization code below.
 
-let file=require("./piano/midi/Alert.mp3")
-var whoosh = new Sound(file, (error) => {
-  if (error) {
-    console.log('failed to load the sound', error);
-    return;
-  }
-  // loaded successfully
-  console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
+    let file=require("./piano/midi/Alert.mp3")
+    var whoosh = new Sound(file, (error) => {
+      if (error) {
+        console.log('failed to load the sound', error);
+        return;
+      }
 
-  // Play the sound with an onEnd callback
-  whoosh.play((success) => {
-    if (success) {
-      console.log('successfully finished playing');
-    } else {
-      console.log('playback failed due to audio decoding errors');
+      whoosh.play();
+    });
     }
-  });
-});
-  }
+
+  
   render(){
     return (
       <>
-        <StatusBar barStyle="dark-content" />
           <View style={styles.view}>
-            <Text style={styles.headerText}>Shadiao Music</Text>
-            <View style={styles.buttonsWrapper}>
-                <View style={styles.buttonStyle}>
-                  <Button
-                  title='视频提取'
+
+            <View style={styles.upWrapper}>
+              <View style={styles.buttonsWrapper}>
+                  <TouchableHighlight
                   onPress={this.showVideo}
-                  ></Button>
+                  underlayColor='#a7b11c'
+                  style={styles.video}
+                  >
+                    <Image
+                    style={styles.icon}
+                    source={require('./img/video.png')}></Image>
+                  </TouchableHighlight>
+
+                  <TouchableHighlight
+                  onPress={this.showAudio}
+                  underlayColor='#a7b11c'
+                  style={styles.audio}
+                  >
+                    <Image
+                    style={styles.icon}
+                    source={require('./img/mic.png')}></Image>
+                  </TouchableHighlight>
+
+                  <TouchableHighlight
+                  onPress={this.showPiano}
+                  underlayColor='#a7b11c'
+                  style={styles.piano}
+                  >
+                    <Image
+                    style={styles.icon}
+                    source={require('./img/piano.png')}></Image>
+                  </TouchableHighlight>
                 </View>
 
-                <View style={styles.buttonStyle}>
-                  <Button
-                  title='音频提取'
-                  onPress={this.showAudio}></Button>
+                <View style={styles.musics}>
+                    <Image
+                      style={styles.music}
+                        source={require('./img/music.png')}></Image>
+                    <Image
+                      style={styles.music}
+                        source={require('./img/music.png')}></Image>
+                    <Image
+                      style={styles.music}
+                        source={require('./img/music.png')}></Image>
                 </View>
+              </View>
 
-                <View style={styles.buttonStyle}>
-                  <Button
-                  title='重力鼓点'
-                  onPress={this.showDrum}></Button>
-                </View>
-        
-                <View style={styles.buttonStyle}>
-                  <Button
-                  title='钢琴'
-                  onPress={this.showPiano}></Button>
-                </View>
-
-                <View style={styles.buttonStyle}>
-                  <Button
-                  title='生成音乐'
-                  onPress={this.genMusic}></Button>
-                </View>
-
-            </View>
+              <View style={styles.playWrapper}>
+                <TouchableHighlight
+                onPress={this.genMusic}
+                underlayColor='#a7b11c'
+                style={styles.genMusic}
+                >
+                  <Image
+                  style={styles.icon}
+                  source={require('./img/play.png')}></Image>
+                </TouchableHighlight>
+              </View>
           </View>
 
           
           <Modal
-          visible={this.state.isShowPiano}>    
-          <Record/> 
-            <Piano
-            onPlayNoteInput={this.onPlay}
-            onStopNoteInput={this.onPlay}/>
-            <Piano
-            onPlayNoteInput={this.onPlay}
-            onStopNoteInput={this.onPlay}/>
-            <Piano
-            onPlayNoteInput={this.onPlay}
-            onStopNoteInput={this.onPlay}/>
-            <Piano
-            onPlayNoteInput={this.onPlay}
-            onStopNoteInput={this.onPlay}/>
+          visible={this.state.isShowPiano}
+          >    
+           <Record/>
+           <View
+            style={styles.pianoWrapper}>
+                <Piano
+                onPlayNoteInput={this.onPlay}
+                onStopNoteInput={this.onPlay}
+                firstNote='c4'
+                lastNote='e5'/>
+                <Piano
+                onPlayNoteInput={this.onPlay}
+                onStopNoteInput={this.onPlay}
+                firstNote='c5'
+                lastNote='e6'/>
+                <Piano
+                onPlayNoteInput={this.onPlay}
+                onStopNoteInput={this.onPlay}
+                firstNote='c6'
+                lastNote='e7'/>
+                <Piano
+                onPlayNoteInput={this.onPlay}
+                onStopNoteInput={this.onPlay}
+                firstNote='c7'
+                lastNote='e8'/>
+            </View>
             <Button 
             title="返回"
             onPress={this.showPiano}></Button>
+            
          </Modal>
 
           <Modal
@@ -171,7 +204,7 @@ var whoosh = new Sound(file, (error) => {
           </Modal>
 
           <Modal
-          visible={this.state.isShowDrum}>     
+          visible={this.state.isShowDrum}> 
               <Drum />
               <Button 
               title="返回"
@@ -193,6 +226,7 @@ var whoosh = new Sound(file, (error) => {
 const styles = StyleSheet.create({
   view: {
     backgroundColor: '#fdf2dc',
+    flex:1
   },
   headerText:{
     fontSize:30,
@@ -201,14 +235,74 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#555555'
   },
-  buttonStyle :{
-    margin:10,
-    width:200,
-    height:50,
-    alignContent:'stretch',
+  upWrapper:{
+    flexDirection:'row',
+    flex:11,
+
+  },
+  musics:{
+      flex:2,
+      justifyContent:'space-around',
+      paddingBottom:100,
+      paddingTop:60,
+      marginLeft:-30
   },
   buttonsWrapper :{
-    alignContent:'stretch',
+    alignContent:'center',
+    alignItems:'flex-start',
+    flex:1
+  },
+  icon :{
+    margin:10,
+    width:60,
+    height:60,
+    alignSelf:'center',
+  },
+  video:{
+    width:80,
+    height:80,
+    backgroundColor:'#f2af22',
+    justifyContent:'center',
+    borderRadius:20,
+    margin:20,
+    marginTop:80
+  },
+  audio:{
+    width:80,
+    height:80,
+    backgroundColor:'#d93732',
+    justifyContent:'center',
+    borderRadius:20,
+    margin:20,
+  },
+  piano:{
+    width:80,
+    height:80,
+    backgroundColor:'#985978',
+    justifyContent:'center',
+    margin:20,
+    borderRadius:20,
+  },
+  genMusic:{
+    width:120,
+    height:120,
+    backgroundColor:'#fdf2dc',
+    justifyContent:'center',
+    borderRadius:20,
+  },
+  playWrapper:{
+    backgroundColor:'#a7b11c',
+    flex:4,
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  music:{
+    width:220,
+    height:80,
+  },
+  pianoWrapper:{
+    backgroundColor:'red',
+    flex:1
   }
 });
 

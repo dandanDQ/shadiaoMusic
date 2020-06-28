@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 const Sound = require('react-native-sound');
-
+Sound.setCategory('Playback');
 
 export default class GenMusic {
     constructor(name) {
         this.name = name
     }
-    genMusic(notes) {
-        notes.forEach((note) => {
-            let file = this.getFile(note);
+
+    //传入数组，播放音乐
+    genMusic(midis) {
+        midis.forEach((midi) => {
+            let file = this.getFile(midi);
             var playNote = new Sound(file, (error) => {
                 if (error) {
                     console.log('failed to load the sound', error);
@@ -26,9 +28,12 @@ export default class GenMusic {
         })
     }
 
-    getFile(note) {
+    // TODO 3.
+
+    //getFile函数用于获取音频文件，
+    getFile(midi) {
         let file = '';
-        switch (note) {
+        switch (midi) {
             case 1:
                 {
                     file = require('../piano/midi/1.mp3')

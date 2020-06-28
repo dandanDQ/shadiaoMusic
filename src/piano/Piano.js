@@ -9,13 +9,13 @@ import Key from './Key'
 
 import MidiNumbers from './MidiNumbers'
 
-class Piano extends Component {
+export default class Piano extends Component {
     constructor(props){
         super(props);
         this.state = {
             noteRange: {
-              first: MidiNumbers.fromNote('c4'),
-              last: MidiNumbers.fromNote('e5')
+              first: MidiNumbers.fromNote(this.props.firstNote),
+              last: MidiNumbers.fromNote(this.props.lastNote)
             }
           }
     }
@@ -26,17 +26,17 @@ class Piano extends Component {
     onStopNoteInput: PropTypes.func.isRequired
   };
 
-//   componentDidMount() {
-//     const { noteRange } = this.props
+  // componentDidMount() {
+  //   const { noteRange } = this.props
 
-//     this.setState({
-//       ...this.state,
-//       noteRange: {
-//         first: MidiNumbers.fromNote('c4'),
-//               last: MidiNumbers.fromNote('e5')
-//       }
-//     })
-//   }
+  //   this.setState({
+  //     ...this.state,
+  //     noteRange: {
+  //       first: MidiNumbers.fromNote('c4'),
+  //             last: MidiNumbers.fromNote('e5')
+  //     }
+  //   })
+  // }
 
   getNaturalKeyCount() {
     return this.getMidiNumbers().filter((number) => {
@@ -95,12 +95,10 @@ class Piano extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
-    position: 'relative', 
     backgroundColor: 'blue', 
     borderTopColor: 'red', 
-    borderTopWidth: 1,
+    flexDirection:'row',
+    flex:1,    
   }
 })
 
-export default Piano

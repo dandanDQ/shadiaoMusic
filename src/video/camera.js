@@ -3,6 +3,10 @@ import { RNCamera } from 'react-native-camera';
 
 import { StyleSheet, Text, TouchableOpacity, View  } from 'react-native';
 
+
+//TODO　1.改成拍照，获取图像文件，根据某种规则生成ｎｏｔｅｓ数组
+//TODO  2.找一下处理图片的库  canvas
+
 export class CameraScreen extends PureComponent {
     constructor(props){
     super(props);
