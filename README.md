@@ -56,8 +56,20 @@ c5到e6，对应72到88
 
 - [ ] 钢琴记录（先外录
 
-- [ ] 将摄像改为拍照，获取图片文件，根据某种规则生成notes数组（genMusic函数的参数），找一下处理图片的库
+- [x] 将摄像改为拍照，获取图片文件
     位置：src/video/camera.js和src/video/video.js
-    相机源代码再node_modules下的react-native-camera
+    相机源代码再node_modules下的react-native-camera(这个里面没啥可用的)
+
+
+    图片文件现在在19行的数据里存储 暂时是base64的
+    82行部分的Imagepicker会调用系统相机，可以进行裁剪（看起来比较厉害）
+
+- [ ] 图像的处理，根据某种规则生成notes数组（genMusic函数的参数），找一下处理图片的库
+    位置：camera.js 114行跳转生成
+    opencv那个网页上的可装，但是用的时候会报错
+    还有个react-native-opencv3目测可用但是还没试 （https://www.npmjs.com/package/react-native-opencv3）
+
+- [ ] 拍照界面的样式调整
+      目前拍照之后会定格预览，然后有“重新拍照”和"确定"两个选项
 
 - [ ] 音频的处理

@@ -83,6 +83,10 @@ target 'shadiaoMusic' do
 
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
 
+  pod 'react-native-cameraroll', :path => '../node_modules/@react-native-community/cameraroll'
+
+  pod 'RNImageCropPicker', :path => '../node_modules/react-native-image-crop-picker'
+
   target 'shadiaoMusicTests' do
     inherit! :complete
     # Pods for testing
