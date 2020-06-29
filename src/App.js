@@ -71,11 +71,18 @@ export default class App extends Component{
   
   genMusic = ()=> {
     let notes =[]
-    for(let i=1;i<100;i++){
-      let note=genMusic.getNote(1,13)
-      notes.push(note)
+    let tt=this;
+    var rand = 0.5;
+    var rate = 1.0;
+    for(let i=1;i<20;i++){
+      setTimeout(function(){
+          let note=genMusic.getNote(36,88)
+          notes.push(note)
+
+          tt.onPlay(note,note);
+      },rate*800*(Math.random() * rand + (1-rand))*i)
     }
-    genMusic.genMusic(notes)
+//    genMusic.genMusic(notes)
   }
 
   onPlay(note,midi){
@@ -85,7 +92,7 @@ export default class App extends Component{
     // Load the sound file 'whoosh.mp3' from the app bundle
     // See notes below about preloading sounds within initialization code below.
 
-    let file=require("./piano/midi/Alert.mp3")
+    let file = genMusic.getFile(midi);
     var whoosh = new Sound(file, (error) => {
       if (error) {
         console.log('failed to load the sound', error);
@@ -171,6 +178,16 @@ export default class App extends Component{
                 <Piano
                 onPlayNoteInput={this.onPlay}
                 onStopNoteInput={this.onPlay}
+                firstNote='c2'
+                lastNote='e3'/>
+                <Piano
+                onPlayNoteInput={this.onPlay}
+                onStopNoteInput={this.onPlay}
+                firstNote='c3'
+                lastNote='e4'/>
+                <Piano
+                onPlayNoteInput={this.onPlay}
+                onStopNoteInput={this.onPlay}
                 firstNote='c4'
                 lastNote='e5'/>
                 <Piano
@@ -178,16 +195,6 @@ export default class App extends Component{
                 onStopNoteInput={this.onPlay}
                 firstNote='c5'
                 lastNote='e6'/>
-                <Piano
-                onPlayNoteInput={this.onPlay}
-                onStopNoteInput={this.onPlay}
-                firstNote='c6'
-                lastNote='e7'/>
-                <Piano
-                onPlayNoteInput={this.onPlay}
-                onStopNoteInput={this.onPlay}
-                firstNote='c7'
-                lastNote='e8'/>
             </View>
             <Button 
             title="返回"

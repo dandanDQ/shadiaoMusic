@@ -119,29 +119,29 @@ export default class Record extends Component{
     }
 
     async play() {
-    // 如果在录音 , 执行停止按钮
-    if (this.state.recording) {
-      await this.stop();
-    }
-
-    // 使用 setTimeout 是因为, 为避免发生一些问题 react-native-sound中
-    setTimeout(() => {
-      var sound = new Sound(this.state.audioPath, '', (error) => {
-        if (error) {
-          console.log('failed to load the sound', error);
+        // 如果在录音 , 执行停止按钮
+        if (this.state.recording) {
+          await this.stop();
         }
-      });
 
-      setTimeout(() => {
-        sound.play((success) => {
-          if (success) {
-            console.log('successfully finished playing');
-          } else {
-            console.log('playback failed due to audio decoding errors');
-          }
-        });
-      }, 100);
-    }, 100);
+        // 使用 setTimeout 是因为, 为避免发生一些问题 react-native-sound中
+        setTimeout(() => {
+          var sound = new Sound(this.state.audioPath, '', (error) => {
+            if (error) {
+              console.log('failed to load the sound', error);
+            }
+          });
+
+          setTimeout(() => {
+            sound.play((success) => {
+              if (success) {
+                console.log('successfully finished playing');
+              } else {
+                console.log('playback failed due to audio decoding errors');
+              }
+            });
+          }, 100);
+        }, 100);
     }
 
     async pause() {

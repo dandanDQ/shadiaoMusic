@@ -42,17 +42,19 @@ src
 
 - [x] 主界面样式修改
 
-- [ ] 根据midi值获取mp3文件
+- [x] 根据midi值获取mp3文件
    位置：scr/genMusic/genMusic.js  getFile(midi)函数
    内容：将midi值与piano/midi文件夹下的音频文件（需要找新的文件）对应
 
-- [ ] 钢琴琴键对应 
+- [x] 钢琴琴键对应
 
+c2到e3，对应36到52
+c3到e4，对应48到64
 c4到e5，对应60到76
-c5到e6
-c6到e7
-c7到e8
+c5到e6，对应72到88
    位置：src/app.js onPlay函数，根据传入midi值播放音乐，可尝试使用genMusic.genMusic
+
+- [ ] 钢琴记录（先外录
 
 - [ ] 将摄像改为拍照，获取图片文件，根据某种规则生成notes数组（genMusic函数的参数），找一下处理图片的库
     位置：src/video/camera.js和src/video/video.js
