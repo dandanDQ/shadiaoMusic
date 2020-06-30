@@ -10,6 +10,7 @@ import {AudioRecorder, AudioUtils} from 'react-native-audio'
 import Sound from 'react-native-sound';
 import React,{Component}  from 'react';
 import {
+  NativeModules,
   SafeAreaView,
   StyleSheet,
   ScrollView,
@@ -20,6 +21,7 @@ import {
   PermissionsAndroid,
 } from 'react-native';
 
+var AudioRecorderManager = NativeModules.AudioRecorderManager;
 
 export default class Record extends Component{
     constructor(props){
@@ -90,6 +92,7 @@ export default class Record extends Component{
         this.setState({recording: true});
         try {
             await AudioRecorder.startRecording();
+//            AudioRecorderManager.startRecording();
   
           } catch (error) {
             console.error(error);

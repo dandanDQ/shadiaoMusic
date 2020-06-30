@@ -54,8 +54,12 @@ export class CameraScreen extends PureComponent {
                     style={styles.preview}
                     type={RNCamera.Constants.Type.back}
 
-                    permissionDialogTitle={'Permission to use camera'}
-                    permissionDialogMessage={'We need your permission to use your camera phone'}
+                    androidCameraPermissionOptions={{
+                        title: 'Permission to use camera',
+                        message: 'We need your permission to use your camera',
+                        buttonPositive: 'Ok',
+                        buttonNegative: 'Cancel',
+                    }}
                 >
                     {({ camera, status }) => {
                         console.log(status);
@@ -74,37 +78,54 @@ export class CameraScreen extends PureComponent {
     recordBtn(camera){
         if (this.state.isRecording===false){
             return(
+//                <TouchableOpacity onPress={() => this.takePicture(camera)} style={styles.capture}>
+//                    <Text style={{ fontSize: 14 }}> 拍摄 </Text>
+//                </TouchableOpacity>
             <View>
-                <TouchableOpacity onPress={() => this.takePicture(camera)} style={styles.capture}>
+                <TouchableOpacity onPress={() => {
+                    let tt = this;
+                    ImagePicker.openCamera({
+                        path: 'my-file-path.jpg',
+                        width: 400,
+                        height: 400,
+                        cropping: true,
+                        includeBase64:true
+                    }).then(image => {
+//                        console.log(image);
+                        tt.setState({photoAsBase64: { content: image.data, isPhotoPreview: false, photoPath: image.path }});
+                    });
+                }} style={styles.capture}>
                     <Text style={{ fontSize: 14 }}> 拍摄 </Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity onPress={() => {
-                    ImagePicker.openCamera({
-                      width: 400,
-                      height: 400,
-                      cropping: true
+                    let tt = this;
+                    ImagePicker.openPicker({
+                        multiple: false,
+                        includeBase64:true
                     }).then(image => {
-                      console.log(image);
+//                      console.log(image);
+                        tt.setState({photoAsBase64: { content: image.data, isPhotoPreview: false, photoPath: image.path }});
                     });
-                    this.setState({photoAsBase64: { content: image.base64, isPhotoPreview: false, photoPath: image.uri }});
+//                    console.log(this.state.photoAsBase64.photoPath);
                 }} style={styles.capture}>
-                    <Text style={{ fontSize: 14 }}> ImagePicker </Text>
+                    <Text style={{ fontSize: 14 }}> 从相册选取 </Text>
                 </TouchableOpacity>
             </View>
 
             )
         } else {
             return (
-            <View>
+//            <View>
                 <TouchableOpacity onPress={() => {camera.resumePreview();this.setState({isRecording:false});}} style={styles.capture}>
                     <Text style={{ fontSize: 14 }}> 重新拍照 </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => this.savePicture()} style={styles.capture}>
-                    <Text style={{ fontSize: 14 }}> 确定 </Text>
-                </TouchableOpacity>
-
-            </View>
+//                <TouchableOpacity onPress={() => this.savePicture()} style={styles.capture}>
+//                    <Text style={{ fontSize: 14 }}> 确定 </Text>
+//                </TouchableOpacity>
+//
+//            </View>
             )
         }
     }
@@ -118,7 +139,6 @@ export class CameraScreen extends PureComponent {
     };
 
     takePicture = async function(camera){
-        console.log("ddddddddd");
         this.setState({isRecording:true});
         let tt = this;
         const options = { quality: 0.5, base64: true ,pauseAfterCapture:true};
