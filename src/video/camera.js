@@ -1,11 +1,9 @@
 import React, { PureComponent } from 'react';
-import { RNCamera } from 'react-native-camera';
 
-import { StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View,Image} from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 
-//TODO　1.改成拍照，获取图像文件，根据某种规则生成ｎｏｔｅｓ数组
-//TODO  2.找一下处理图片的库  canvas
+
 
 export class CameraScreen extends PureComponent {
     constructor(props){
@@ -23,66 +21,14 @@ export class CameraScreen extends PureComponent {
         },
     }
     }
-    toggleFlash(){
-        this.setState({isFlashOn:!this.state.isFlashOn})
-    }
 
-    isFlashOn(){
-        if (this.state.isFlashOn===false){
-            return(
-                <TouchableOpacity  onPress={()=>{this.toggleFlash()}}>
-                    <Text style={{fontSize:30,fontFamily:'iconfont',color:'black'}}>&#xe633;</Text>
-                </TouchableOpacity>
-            )
-        } else {
-            return(
-                <TouchableOpacity  onPress={()=>{this.toggleFlash()}}>
-                    <Text style={{fontSize:30,color:'white',fontFamily:'iconfont'}}>&#xe633;</Text>
-                </TouchableOpacity>
-            )
-        }
-    }
 
     render() {
         return (
             <View style={styles.container}>
-
-                <RNCamera
-                    ref={ref => {
-                        this.camera = ref;
-                    }}
-                    style={styles.preview}
-                    type={RNCamera.Constants.Type.back}
-
-                    androidCameraPermissionOptions={{
-                        title: 'Permission to use camera',
-                        message: 'We need your permission to use your camera',
-                        buttonPositive: 'Ok',
-                        buttonNegative: 'Cancel',
-                    }}
-                >
-                    {({ camera, status }) => {
-                        console.log(status);
-                        return (
-                            <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
-
-                                {this.recordBtn(camera)}
-                            </View>
-                        );
-                    }}
-                </RNCamera>
-            </View>
-        );
-    }
-
-    recordBtn(camera){
-        if (this.state.isRecording===false){
-            return(
-//                <TouchableOpacity onPress={() => this.takePicture(camera)} style={styles.capture}>
-//                    <Text style={{ fontSize: 14 }}> 拍摄 </Text>
-//                </TouchableOpacity>
-            <View>
-                <TouchableOpacity onPress={() => {
+                <TouchableOpacity 
+                style={styles.button}
+                onPress={() => {
                     let tt = this;
                     ImagePicker.openCamera({
                         path: 'my-file-path.jpg',
@@ -94,11 +40,15 @@ export class CameraScreen extends PureComponent {
 //                        console.log(image);
                         tt.setState({photoAsBase64: { content: image.data, isPhotoPreview: false, photoPath: image.path }});
                     });
-                }} style={styles.capture}>
-                    <Text style={{ fontSize: 14 }}> 拍摄 </Text>
+                }}>
+                    <Image
+                    style={styles.icon}
+                    source={require('../img/camera.png')}></Image>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => {
+                <TouchableOpacity 
+                style={styles.button}
+                onPress={() => {
                     let tt = this;
                     ImagePicker.openPicker({
                         multiple: false,
@@ -107,37 +57,16 @@ export class CameraScreen extends PureComponent {
 //                      console.log(image);
                         tt.setState({photoAsBase64: { content: image.data, isPhotoPreview: false, photoPath: image.path }});
                     });
-//                    console.log(this.state.photoAsBase64.photoPath);
-                }} style={styles.capture}>
-                    <Text style={{ fontSize: 14 }}> 从相册选取 </Text>
+                }}>
+                     <Image
+                    style={styles.photo}
+                    source={require('../img/photo.png')}></Image>
                 </TouchableOpacity>
             </View>
-
-            )
-        } else {
-            return (
-//            <View>
-                <TouchableOpacity onPress={() => {camera.resumePreview();this.setState({isRecording:false});}} style={styles.capture}>
-                    <Text style={{ fontSize: 14 }}> 重新拍照 </Text>
-                </TouchableOpacity>
-
-//                <TouchableOpacity onPress={() => this.savePicture()} style={styles.capture}>
-//                    <Text style={{ fontSize: 14 }}> 确定 </Text>
-//                </TouchableOpacity>
-//
-//            </View>
-            )
-        }
+        );
     }
-    //开始录像
-    takeRecord= async function(camera){
-        this.setState({isRecording:true});
-        const options = { quality:RNCamera.Constants.VideoQuality["480p"],maxFileSize:(100*1024*1024) };
-        const data = await camera.recordAsync(options);
-        console.log(data);
-        this.props.navigation.navigate('parentPage',{videoUrl:data.uri})
-    };
 
+  
     takePicture = async function(camera){
         this.setState({isRecording:true});
         let tt = this;
@@ -148,7 +77,6 @@ export class CameraScreen extends PureComponent {
         });
         console.log(this.state.photoAsBase64.photoPath);
 //            alert("拍照成功！图片保存地址：\n"+data.uri)
-
     }
 
     //TODO: 跳转生成
@@ -157,19 +85,13 @@ export class CameraScreen extends PureComponent {
         camera.resumePreview();
     }
 
-
-    //停止录像
-    stopRecord(camera){
-        this.setState({isRecording:false});
-        camera.stopRecording()
-    }
 }
 
 const styles = StyleSheet.create({
   container: {
       flex: 1,
       flexDirection: 'column',
-      backgroundColor: 'black',
+      backgroundColor: '#fdf2dc',
   },
   preview: {
       flex: 1,
@@ -185,4 +107,21 @@ const styles = StyleSheet.create({
       alignSelf: 'center',
       margin: 20,
   },
+  icon :{
+    margin:10,
+    width:60,
+    height:60,
+    alignSelf:'center',
+    backgroundColor: '#fdf2dc',
+  },
+  button:{
+    backgroundColor: '#fdf2dc',
+  },
+  photo:{
+    margin:10,
+    width:45,
+    height:45,
+    alignSelf:'center',
+    backgroundColor: '#fdf2dc',
+  }
 });

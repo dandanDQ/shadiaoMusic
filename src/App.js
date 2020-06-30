@@ -172,6 +172,15 @@ export default class App extends Component{
           <Modal
           visible={this.state.isShowPiano}
           >    
+          <TouchableHighlight
+            onPress={this.showPiano}
+            underlayColor='#a7b11c'
+            style={styles.homeWrapper}
+            >
+              <Image
+              style={styles.home}
+              source={require('./img/home.png')}></Image>
+            </TouchableHighlight>
            <Record/>
            <View
             style={styles.pianoWrapper}>
@@ -196,34 +205,37 @@ export default class App extends Component{
                 firstNote='c5'
                 lastNote='e6'/>
             </View>
-            <Button 
-            title="返回"
-            onPress={this.showPiano}></Button>
             
          </Modal>
 
           <Modal
           visible={this.state.isShowAudio}>     
-              <Audio />
-              <Button 
-              title="返回"
-              onPress={this.showAudio}></Button>
-          </Modal>
-
-          <Modal
-          visible={this.state.isShowDrum}> 
-              <Drum />
-              <Button 
-              title="返回"
-              onPress={this.showDrum}></Button>
+             
+              <TouchableHighlight
+            onPress={this.showAudio}
+            underlayColor='#a7b11c'
+            style={styles.homeWrapper}
+            >
+              <Image
+              style={styles.home}
+              source={require('./img/home.png')}></Image>
+            </TouchableHighlight>
+            <Audio />
           </Modal>
 
           <Modal
           visible={this.state.isShowVideo}>     
-              <Video />
-              <Button 
-              title="返回"
-              onPress={this.showVideo}></Button>
+             
+              <TouchableHighlight
+            onPress={this.showVideo}
+            underlayColor='#a7b11c'
+            style={styles.homeWrapper}
+            >
+              <Image
+              style={styles.home}
+              source={require('./img/home.png')}></Image>
+            </TouchableHighlight>
+            <Video />
           </Modal>
       </>
       );
@@ -310,6 +322,20 @@ const styles = StyleSheet.create({
   pianoWrapper:{
     backgroundColor:'red',
     flex:1
+  },
+  homeWrapper:{
+    width:60,
+    height:60,
+    backgroundColor:'#985978',
+    justifyContent:'center',
+    margin:20,
+    borderRadius:20,
+  },
+  home:{
+    margin:10,
+    width:40,
+    height:40,
+    alignSelf:'center',
   }
 });
 

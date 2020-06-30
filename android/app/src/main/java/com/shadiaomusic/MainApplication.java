@@ -8,7 +8,6 @@ import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.reactnativecommunity.cameraroll.CameraRollPackage;
 import com.rnim.rn.audio.ReactNativeAudioPackage;
 import com.zmxv.RNSound.RNSoundPackage;
-import org.reactnative.camera.RNCameraPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
