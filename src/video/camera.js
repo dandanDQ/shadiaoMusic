@@ -3,14 +3,11 @@ import React, { PureComponent } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View,Image} from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 
-
-
 export class CameraScreen extends PureComponent {
     constructor(props){
     super(props);
     this.takePicture = this.takePicture.bind(this);
     this.state={
-        isFlashOn:false,        //闪光灯
         isRecording:false,      //是否在录像
         cameraPermission: false,
 
@@ -22,12 +19,11 @@ export class CameraScreen extends PureComponent {
     }
     }
 
-
     render() {
         return (
             <View style={styles.container}>
                 <TouchableOpacity 
-                style={styles.button}
+                style={styles.takephoto}
                 onPress={() => {
                     let tt = this;
                     ImagePicker.openCamera({
@@ -37,17 +33,17 @@ export class CameraScreen extends PureComponent {
                         cropping: true,
                         includeBase64:true
                     }).then(image => {
-//                        console.log(image);
+                      console.log(image);
                         tt.setState({photoAsBase64: { content: image.data, isPhotoPreview: false, photoPath: image.path }});
                     });
                 }}>
                     <Image
-                    style={styles.icon}
+                    style={styles.cameraIcon}
                     source={require('../img/camera.png')}></Image>
                 </TouchableOpacity>
 
                 <TouchableOpacity 
-                style={styles.button}
+                style={styles.album}
                 onPress={() => {
                     let tt = this;
                     ImagePicker.openPicker({
@@ -59,7 +55,7 @@ export class CameraScreen extends PureComponent {
                     });
                 }}>
                      <Image
-                    style={styles.photo}
+                    style={styles.photoIcon}
                     source={require('../img/photo.png')}></Image>
                 </TouchableOpacity>
             </View>
@@ -107,21 +103,32 @@ const styles = StyleSheet.create({
       alignSelf: 'center',
       margin: 20,
   },
-  icon :{
+  cameraIcon :{
     margin:10,
-    width:60,
-    height:60,
+    width:80,
+    height:80,
     alignSelf:'center',
-    backgroundColor: '#fdf2dc',
+    backgroundColor: '#f2af22',
   },
-  button:{
-    backgroundColor: '#fdf2dc',
+  takephoto:{
+    backgroundColor: '#f2af22',
+    margin:20,
+    borderRadius:20,
+    flex:1,
+    justifyContent:'center'
   },
-  photo:{
+  album:{
+    backgroundColor: '#985978',
+    borderRadius:20,
+    flex:1,
+    margin:20,
+    justifyContent:'center'
+  },
+  photoIcon:{
     margin:10,
-    width:45,
-    height:45,
+    width:75,
+    height:75,
     alignSelf:'center',
-    backgroundColor: '#fdf2dc',
+    backgroundColor: '#985978',
   }
 });

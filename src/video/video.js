@@ -13,8 +13,6 @@ class Video extends Component {
     render(){
         return (
             <View style={styles.view}>
-                <Record/>
-                <Text>视频提取</Text>
                 <CameraScreen/>
             </View>
         )

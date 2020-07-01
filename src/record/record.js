@@ -12,6 +12,8 @@ import React,{Component}  from 'react';
 import {
   NativeModules,
   SafeAreaView,
+  TouchableHighlight,
+  Image,
   StyleSheet,
   ScrollView,
   View,
@@ -201,27 +203,46 @@ export default class Record extends Component{
     let { recording, pause, currentTime } = this.state
     return (
         <>
-            <View style={styles.buttonsWrapper}>
-                <View style={styles.buttonStyle}>
-                    <Button
-                    title='Start' onPress={this.record}>
-                    </Button>
-                </View>
-                <View style={styles.buttonStyle}>
-                    <Button
-                    title='Stop' onPress={this.stop}>
-                    </Button>
-                </View>
-                <View style={styles.buttonStyle}>
-                    <Button
-                    title='Pause' onPress={this.pause}>
-                    </Button>
-                </View>
-                <View style={styles.buttonStyle}>
-                <Button
-                title='Play' onPress={this.play}>
-                </Button>
-                </View>
+        <View style={styles.container}>
+          <TouchableHighlight
+            onPress={this.record}
+            underlayColor='#a7b11c'
+            style={styles.recorderWrapper}
+            >
+              <Image
+              style={styles.icon}
+              source={require('../img/start.png')}></Image>
+            </TouchableHighlight>
+
+            <TouchableHighlight
+            onPress={this.pause}
+            underlayColor='#a7b11c'
+            style={styles.recorderWrapper}
+            >
+              <Image
+              style={styles.icon}
+              source={require('../img/sup.png')}></Image>
+            </TouchableHighlight>
+
+            <TouchableHighlight
+            onPress={this.stop}
+            underlayColor='#a7b11c'
+            style={styles.recorderWrapper}
+            >
+              <Image
+              style={styles.icon}
+              source={require('../img/stop.png')}></Image>
+            </TouchableHighlight>
+
+            <TouchableHighlight
+            onPress={this.play}
+            underlayColor='#a7b11c'
+            style={styles.recorderWrapper}
+            >
+              <Image
+              style={styles.icon}
+              source={require('../img/play2.png')}></Image>
+            </TouchableHighlight>
             </View>
         </>
       );
@@ -230,17 +251,24 @@ export default class Record extends Component{
 
 
 const styles = StyleSheet.create({
-  buttonStyle :{
-    margin:10,
-    width:60,
-    height:50,
-    alignContent:'stretch',
+  container:{
+    flexDirection:'row',
+    alignSelf:'center',
   },
-  buttonsWrapper :{
-    alignContent:'stretch',
-    flexDirection:'row'
-    
-  }
+  recorderWrapper:{
+    backgroundColor:'#fdf2dc',
+    alignSelf:'stretch',
+    borderRadius:40,
+    margin:10
+
+
+  },
+  icon :{
+    margin:10,
+    width:40,
+    height:40,
+    alignSelf:'center',
+  },
 });
 
 //export default Record
