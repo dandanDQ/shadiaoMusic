@@ -58,9 +58,6 @@ c5到e6，对应72到88
 
 - [x] 将摄像改为拍照，获取图片文件
     位置：src/video/camera.js和src/video/video.js
-    相机源代码再node_modules下的react-native-camera(这个里面没啥可用的)
-
-
     图片文件现在在19行的数据里存储 暂时是base64的
     82行部分的Imagepicker会调用系统相机，可以进行裁剪（看起来比较厉害）
 
@@ -69,9 +66,9 @@ c5到e6，对应72到88
     opencv那个网页上的可装，但是用的时候会报错
     还有个react-native-opencv3目测可用但是还没试 （https://www.npmjs.com/package/react-native-opencv3）
 
-- [ ] 拍照界面的样式调整
-      目前拍照之后会定格预览，然后有“重新拍照”和"确定"两个选项
+- [x] 拍照界面的样式调整
 
-- [ ] 音频的处理
-（音频试着去react-native-audio里改了一下，函数加进去了但是好像没加对地方 在AudioRecorderManager两百行出头的地方
- 改后的文件放在src目录下了
+- [x] 音频的处理
+   每秒提取分贝
+   需要在npm install后用 shadiaoMusic\src 目录下的 AudioRecorderManager.java替换
+   shadiaoMusic\node_modules\react-native-audio\android\src\main\java\com\rnim\rn\audio目录下的同名文件

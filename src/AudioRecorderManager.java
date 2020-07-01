@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,10 +32,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.util.Base64;
 import android.util.Log;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
-
 import android.os.Handler;
-import java.util.ArrayList;
+
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.io.FileInputStream;
 
@@ -63,7 +63,7 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
   private boolean includeBase64 = false;
   private Timer timer;
   private StopWatch stopWatch;
-  
+
   private boolean isPauseResumeCapable = false;
   private Method pauseMethod = null;
   private Method resumeMethod = null;
@@ -73,7 +73,7 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
     super(reactContext);
     this.context = reactContext;
     stopWatch = new StopWatch();
-    
+
     isPauseResumeCapable = Build.VERSION.SDK_INT > Build.VERSION_CODES.M;
     if (isPauseResumeCapable) {
       try {
@@ -149,23 +149,23 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
   }
 
   private int getAudioEncoderFromString(String audioEncoder) {
-   switch (audioEncoder) {
-     case "aac":
-       return MediaRecorder.AudioEncoder.AAC;
-     case "aac_eld":
-       return MediaRecorder.AudioEncoder.AAC_ELD;
-     case "amr_nb":
-       return MediaRecorder.AudioEncoder.AMR_NB;
-     case "amr_wb":
-       return MediaRecorder.AudioEncoder.AMR_WB;
-     case "he_aac":
-       return MediaRecorder.AudioEncoder.HE_AAC;
-     case "vorbis":
-      return MediaRecorder.AudioEncoder.VORBIS;
-     default:
-       Log.d("INVALID_AUDIO_ENCODER", "USING MediaRecorder.AudioEncoder.DEFAULT instead of "+audioEncoder+": "+MediaRecorder.AudioEncoder.DEFAULT);
-       return MediaRecorder.AudioEncoder.DEFAULT;
-   }
+    switch (audioEncoder) {
+      case "aac":
+        return MediaRecorder.AudioEncoder.AAC;
+      case "aac_eld":
+        return MediaRecorder.AudioEncoder.AAC_ELD;
+      case "amr_nb":
+        return MediaRecorder.AudioEncoder.AMR_NB;
+      case "amr_wb":
+        return MediaRecorder.AudioEncoder.AMR_WB;
+      case "he_aac":
+        return MediaRecorder.AudioEncoder.HE_AAC;
+      case "vorbis":
+        return MediaRecorder.AudioEncoder.VORBIS;
+      default:
+        Log.d("INVALID_AUDIO_ENCODER", "USING MediaRecorder.AudioEncoder.DEFAULT instead of "+audioEncoder+": "+MediaRecorder.AudioEncoder.DEFAULT);
+        return MediaRecorder.AudioEncoder.DEFAULT;
+    }
   }
 
   private int getOutputFormatFromString(String outputFormat) {
@@ -200,7 +200,6 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
       return;
     }
     recorder.start();
-    updateMicStatus();
 
     stopWatch.reset();
     stopWatch.start();
@@ -209,6 +208,7 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
     startTimer();
     promise.resolve(currentOutputFile);
   }
+
   ArrayList list=new ArrayList();
   private final Handler mHandler = new Handler();
   private Runnable mUpdateMicStatusTimer = new Runnable() {
@@ -219,19 +219,19 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
   /**     * 更新话筒状态     *     */
   private int BASE = 1;
   private int SPACE = 100;// 间隔取样时间
-  private void updateMicStatus() {
+
+  private double updateMicStatus() {
+    double db = 0;// 分贝
     if (recorder != null) {
       double ratio = (double)recorder.getMaxAmplitude() /BASE;
-      double db = 0;// 分贝
       if (ratio > 1)
         db = 20 * Math.log10(ratio);
-      Log.v(TAG,"分贝值："+db);
-      mHandler.postDelayed(mUpdateMicStatusTimer, SPACE);
+      Log.d(TAG,"分贝值："+db);
+//      mHandler.postDelayed(mUpdateMicStatusTimer, SPACE);
       list.add(db);
     }
+    return db;
   }
-
-
 
   @ReactMethod
   public void stopRecording(Promise promise){
@@ -263,6 +263,7 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
     WritableMap result = Arguments.createMap();
     result.putString("status", "OK");
     result.putString("audioFileURL", "file://" + currentOutputFile);
+//    result.putArray("amplitude", list);
 
     String base64 = "";
     if (includeBase64) {
@@ -342,6 +343,7 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
         if (!isPaused) {
           WritableMap body = Arguments.createMap();
           body.putDouble("currentTime", stopWatch.getTimeSeconds());
+          body.putDouble("amplitude", updateMicStatus());
           sendEvent("recordingProgress", body);
         }
       }

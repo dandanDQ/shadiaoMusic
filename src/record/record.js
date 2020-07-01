@@ -1,16 +1,8 @@
-﻿/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
-import {AudioRecorder, AudioUtils} from 'react-native-audio'
+﻿import {AudioRecorder, AudioUtils} from 'react-native-audio'
 import Sound from 'react-native-sound';
 import React,{Component}  from 'react';
+
 import {
-  NativeModules,
   SafeAreaView,
   TouchableHighlight,
   Image,
@@ -23,19 +15,25 @@ import {
   PermissionsAndroid,
 } from 'react-native';
 
-var AudioRecorderManager = NativeModules.AudioRecorderManager;
 
 export default class Record extends Component{
     constructor(props){
         super(props);
         this.state = {
-          currentTime: 0.0,                                                   //开始录音到现在的持续时间
-          recording: false,                                                   //是否正在录音
-          stoppedRecording: false,                                            //是否停止了录音
-          pausedRecording: false,                                            //是否停止了录音
-          finished: false,                                                    //是否完成录音
-          audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac',          //路径下的文件名
-          hasPermission: undefined,
+            currentTime: 0.0,                                                   //开始录音到现在的持续时间
+            recording: false,                                                   //是否正在录音
+            stoppedRecording: false,                                            //是否停止了录音
+            pausedRecording: false,                                            //是否停止了录音
+            finished: false,                                                    //是否完成录音
+            audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac',          //路径下的文件名
+            hasPermission: undefined,
+            amp: [],
+
+            audioAsBase64: {
+              amplitude: 0.0,
+              content: '',
+              aPath: '',
+            },
         };
 
         this.prepareRecordingPath = this.prepareRecordingPath.bind(this);     //执行录音的方法
@@ -49,12 +47,14 @@ export default class Record extends Component{
 
     prepareRecordingPath(audioPath){
         AudioRecorder.prepareRecordingAtPath(audioPath, {
-          SampleRate: 22050,
+          SampleRate: 44100,
           Channels: 1,
-          AudioQuality: "Low",            //录音质量
+          AudioQuality: "High",            //录音质量
           AudioEncoding: "aac",           //录音格式
-          AudioEncodingBitRate: 32000     //比特率
+          AudioEncodingBitRate: 32000,     //比特率
+          IncludeBase64: true,
         });
+
     }
 
     checkPermission() {
@@ -93,24 +93,20 @@ export default class Record extends Component{
         }
 
         this.setState({recording: true});
-if(this.state.pausedRecording){
-        try {
-            await AudioRecorder.resumeRecording();
-//            AudioRecorderManager.startRecording();
-  
-          } catch (error) {
-            console.error(error);
+        if(this.state.pausedRecording){
+            try {
+                await AudioRecorder.resumeRecording();
+              } catch (error) {
+                console.error(error);
+            }
         }
-}
-else{
-        try {
-            await AudioRecorder.startRecording();
-//            AudioRecorderManager.startRecording();
-  
-          } catch (error) {
-            console.error(error);
+        else{
+            try {
+                await AudioRecorder.startRecording();
+              } catch (error) {
+                console.error(error);
+            }
         }
-}
     }
 
     async pause() {
@@ -122,7 +118,6 @@ else{
       this.setState({pausedRecording:  true, recording: false});
 
       try {
-
         await AudioRecorder.pauseRecording();
         // 在安卓中, 暂停就等于停止
 //        if (Platform.OS === 'android') {
@@ -146,7 +141,7 @@ else{
 
     try {
       const filePath = await AudioRecorder.stopRecording();
-
+      console.log(filePath);
       if (Platform.OS === 'android') {
         this.finishRecording(true, filePath);
       }
@@ -199,13 +194,18 @@ else{
       this.prepareRecordingPath(this.state.audioPath);
 
       AudioRecorder.onProgress = (data) => {
-        this.setState({currentTime: Math.floor(data.currentTime)});
+//        this.setState({currentTime: Math.floor(data.currentTime)});
+        this.setState({currentTime: Math.floor(data.currentTime), audioAsBase64: {amplitude: data.amplitude}});
+        this.state.amp.push(this.state.audioAsBase64.amplitude);
+        console.log(this.state.amp);
       };
 
       AudioRecorder.onFinished = (data) => {
         if (Platform.OS === 'ios') {
           this.finishRecording(data.status === "OK", data.audioFileURL);
         }
+        this.setState({audioAsBase64: {content: data.base64}});
+//        console.log(this.state.audioAsBase64.content);
       };
 
     })
