@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Sample React Native App
  * https://github.com/facebook/react-native
  *
@@ -32,6 +32,7 @@ export default class Record extends Component{
           currentTime: 0.0,                                                   //开始录音到现在的持续时间
           recording: false,                                                   //是否正在录音
           stoppedRecording: false,                                            //是否停止了录音
+          pausedRecording: false,                                            //是否停止了录音
           finished: false,                                                    //是否完成录音
           audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac',          //路径下的文件名
           hasPermission: undefined,
@@ -92,6 +93,16 @@ export default class Record extends Component{
         }
 
         this.setState({recording: true});
+if(this.state.pausedRecording){
+        try {
+            await AudioRecorder.resumeRecording();
+//            AudioRecorderManager.startRecording();
+  
+          } catch (error) {
+            console.error(error);
+        }
+}
+else{
         try {
             await AudioRecorder.startRecording();
 //            AudioRecorderManager.startRecording();
@@ -99,16 +110,39 @@ export default class Record extends Component{
           } catch (error) {
             console.error(error);
         }
+}
+    }
+
+    async pause() {
+    if (!this.state.recording) {
+        alert('没有录音, 无需停止!');
+        return;
+      }
+
+      this.setState({pausedRecording:  true, recording: false});
+
+      try {
+
+        await AudioRecorder.pauseRecording();
+        // 在安卓中, 暂停就等于停止
+//        if (Platform.OS === 'android') {
+//          const filePath = await AudioRecorder.stopRecording();
+//          this.finishRecording(true, filePath);
+//          return filePath;
+//        }
+      } catch (error) {
+        console.error(error);
+      }
     }
 
     async stop() {
     // 如果没有在录音
-    if (!this.state.recording) {
+    if (!this.state.recording&&!this.state.pausedRecording) {
       alert('没有录音, 无需停止!');
       return;
     }
 
-    this.setState({stoppedRecording: true, recording: false});
+    this.setState({pausedRecording: false,stoppedRecording: true, recording: false});
 
     try {
       const filePath = await AudioRecorder.stopRecording();
@@ -147,26 +181,6 @@ export default class Record extends Component{
             });
           }, 100);
         }, 100);
-    }
-
-    async pause() {
-    if (!this.state.recording) {
-        alert('没有录音, 无需停止!');
-        return;
-      }
-
-      this.setState({stoppedRecording: true, recording: false});
-
-      try {
-        const filePath = await AudioRecorder.pauseRecording();
-
-        // 在安卓中, 暂停就等于停止
-        if (Platform.OS === 'android') {
-          this.finishRecording(true, filePath);
-        }
-      } catch (error) {
-        console.error(error);
-      }
     }
 
     finishRecording(didSucceed, filePath) {
