@@ -140,7 +140,8 @@ export default class Record extends Component{
             console.log(filePath);
             if (Platform.OS === 'android') {
             this.finishRecording(true, filePath);
-        }
+            }
+            alert("成功完成录音！\n时长"+this.state.currentTime+"秒");
             return filePath;
         } catch (error) {
             console.error(error);
