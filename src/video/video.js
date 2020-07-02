@@ -1,6 +1,5 @@
 //sdq的视频提取
 import React, { Component } from 'react'
-import Record from '../record/record'
 import {CameraScreen} from './camera'
 import {View,Text,StyleSheet} from 'react-native'
 class Video extends Component {
