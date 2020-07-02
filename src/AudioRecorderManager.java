@@ -209,14 +209,14 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
     promise.resolve(currentOutputFile);
   }
 
-  ArrayList list=new ArrayList();
-  private final Handler mHandler = new Handler();
-  private Runnable mUpdateMicStatusTimer = new Runnable() {
-    public void run() {
-      updateMicStatus();
-    }
-  };
-  /**     * 更新话筒状态     *     */
+  //  ArrayList list=new ArrayList();
+//  private final Handler mHandler = new Handler();
+//  private Runnable mUpdateMicStatusTimer = new Runnable() {
+//    public void run() {
+//      updateMicStatus();
+//    }
+//  };
+//  /**     * 更新话筒状态     *     */
   private int BASE = 1;
   private int SPACE = 100;// 间隔取样时间
 
@@ -228,7 +228,7 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
         db = 20 * Math.log10(ratio);
       Log.d(TAG,"分贝值："+db);
 //      mHandler.postDelayed(mUpdateMicStatusTimer, SPACE);
-      list.add(db);
+//      list.add(db);
     }
     return db;
   }
