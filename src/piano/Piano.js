@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
-    backgroundColor: 'blue',
+    backgroundColor: '#f2af22',
     borderTopColor: 'red',
     borderTopWidth: 1,
   }

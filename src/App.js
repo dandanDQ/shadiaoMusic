@@ -32,11 +32,10 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import Audio from './audio/audio'
-import Drum from './drum/drum'
 import Video from './video/video'
 import GenMusic from './genMusic/genMusic'
 import Piano from './piano/Piano'
-import Record from './record/record'
+import Slider from '@react-native-community/slider';
 
 const Sound=require('react-native-sound')
 const genMusic = new GenMusic('dq')
@@ -48,49 +47,74 @@ export default class App extends Component{
       isShowAudio:false,
       isShowDrum:false,
       isShowVideo:false,
+      rand:0.5,
+      time:1.0,
+      pianoMidis:[],//用户弹琴记录
+      isPiano:false,//是否钢琴录音
+      isAudio:false,
+      isVideo:false,
     }
   }
   
   
-  showPiano = ()=>{
-    console.log("hello")
+  switchPiano = ()=>{
     this.setState({isShowPiano: !this.state.isShowPiano})
+    if(this.state.pianoMidis.length){
+      this.setState({isPiano:true})
+    }
   }
-  showAudio = ()=>{
-    console.log("hello")
+  switchAudio = ()=>{
     this.setState({isShowAudio: !this.state.isShowAudio})
+    this.setState({isAudio:true})
   }
-  showDrum = ()=>{
-    console.log("hello")
-    this.setState({isShowDrum: !this.state.isShowDrum})
-  }
-  showVideo = ()=>{
-    console.log("hello")
+  switchVideo = ()=>{
     this.setState({isShowVideo: !this.state.isShowVideo})
+    this.setState({isVideo:true})
   }
   
-  genMusic = ()=> {
-    let notes =[]
-    let tt=this;
-    var rand = 0.5;
-    var rate = 1.0;
-    for(let i=1;i<20;i++){
-      setTimeout(function(){
-          let note=genMusic.getNote(36,88)
-          notes.push(note)
-
-          tt.onPlay(note,note);
-      },rate*800*(Math.random() * rand + (1-rand))*i)
-    }
-//    genMusic.genMusic(notes)
+  closePiano = ()=>{
+    this.setState({isShowPiano: !this.state.isShowPiano})
+    this.setState({isPiano:false})
+    this.setState({pianoMidis:[]})
   }
 
-  onPlay(note,midi){
-    console.log("开始啦")
+  closeAudio = ()=>{
+    this.setState({isShowAudio: !this.state.isShowAudio})
+    this.setState({isAudio:false})
+  }
+  closeVideo = ()=>{
+    this.setState({isShowVideo: !this.state.isShowVideo})
+    this.setState({isVideo:false})
+  }
+
+
+  genMusic = ()=> {
+    let tt=this;
+    for(let i=0;i<tt.state.pianoMidis.length;i++){
+      setTimeout(function(){
+        let file = genMusic.getFile(tt.state.pianoMidis[i])
+        var whoosh = new Sound(file, (error) => {
+          if (error) {
+            console.log('failed to load the sound', error);
+            return;
+          }
+          whoosh.play();
+        });
+      },tt.state.time*1000*(Math.random() * tt.state.rand*0.2 + 1)*i) //速度在1-5之间调整
+    }
+    
+    // for(let i=1;i<20;i++){
+    //   setTimeout(function(){
+    //       let note=genMusic.getNote(36,88)
+    //       notes.push(note)
+    //       tt.onPlay(note,note);
+    //   },tt.state.rate*800*(Math.random() * tt.state.rand + (1- tt.state.rand))*i)
+    // }
+  }
+
+  onPlay = (note,midi)=>{
     console.log(note,"__",midi)
     Sound.setCategory('Playback');
-    // Load the sound file 'whoosh.mp3' from the app bundle
-    // See notes below about preloading sounds within initialization code below.
 
     let file = genMusic.getFile(midi);
     var whoosh = new Sound(file, (error) => {
@@ -98,21 +122,65 @@ export default class App extends Component{
         console.log('failed to load the sound', error);
         return;
       }
-
       whoosh.play();
     });
     }
 
+    onEnd = (note,midi)=>{
+      console.log(note,"__",midi)
+  
+      let pianoMidis = [...this.state.pianoMidis]
+      pianoMidis.push(midi)
+      this.setState({pianoMidis:pianoMidis})
+  
+      }
+      changeRand = (val) => {
+        this.setState({rand:val})
+      }
+      changeRate = (val) => {
+        this.setState({time: 1/val})
+      }
   
   render(){
+    let piano;
+    let video;
+    let audio;
+    if(this.state.isPiano){
+      piano = <Image
+      style={styles.music}
+        source={require('./img/purple.png')}></Image>
+    }else{
+      piano = <Image
+      style={styles.music}
+        source={require('./img/music.png')}></Image>
+    }
+
+    if(this.state.isAudio){
+      audio = <Image
+      style={styles.music}
+        source={require('./img/rred.png')}></Image>
+    }else{
+      audio = <Image
+      style={styles.music}
+        source={require('./img/music.png')}></Image>
+    }
+
+    if(this.state.isVideo){
+     video = <Image
+      style={styles.music}
+        source={require('./img/yellow.png')}></Image>
+    }else{
+      video = <Image
+      style={styles.music}
+        source={require('./img/music.png')}></Image>
+    }
     return (
       <>
           <View style={styles.view}>
-
             <View style={styles.upWrapper}>
               <View style={styles.buttonsWrapper}>
                   <TouchableHighlight
-                  onPress={this.showVideo}
+                  onPress={this.switchVideo}
                   underlayColor='#a7b11c'
                   style={styles.video}
                   >
@@ -122,7 +190,7 @@ export default class App extends Component{
                   </TouchableHighlight>
 
                   <TouchableHighlight
-                  onPress={this.showAudio}
+                  onPress={this.switchAudio}
                   underlayColor='#a7b11c'
                   style={styles.audio}
                   >
@@ -132,7 +200,7 @@ export default class App extends Component{
                   </TouchableHighlight>
 
                   <TouchableHighlight
-                  onPress={this.showPiano}
+                  onPress={this.switchPiano}
                   underlayColor='#a7b11c'
                   style={styles.piano}
                   >
@@ -143,18 +211,35 @@ export default class App extends Component{
                 </View>
 
                 <View style={styles.musics}>
-                    <Image
-                      style={styles.music}
-                        source={require('./img/music.png')}></Image>
-                    <Image
-                      style={styles.music}
-                        source={require('./img/music.png')}></Image>
-                    <Image
-                      style={styles.music}
-                        source={require('./img/music.png')}></Image>
+                    {video}
+                    {audio}
+                    {piano}
                 </View>
               </View>
-
+              <View style={styles.randomWrapper}>
+                <Text style={styles.randText}>Random</Text>
+                <Slider
+                style={styles.slider}
+                minimumValue={0}
+                maximumValue={20}
+                minimumTrackTintColor="#FFFFFF"
+                maximumTrackTintColor="#000000"
+                step={1}
+                onValueChange={this.changeRand}
+                />
+              </View>
+              <View style={styles.randomWrapper}>
+                <Text style={styles.randText}>  Speed  </Text>
+                <Slider
+                style={styles.slider}
+                minimumValue={1}
+                maximumValue={20}
+                minimumTrackTintColor="#FFFFFF"
+                maximumTrackTintColor="#000000"
+                step={1}
+                onValueChange={this.changeRate}
+                />
+              </View>
               <View style={styles.playWrapper}>
                 <TouchableHighlight
                 onPress={this.genMusic}
@@ -171,37 +256,47 @@ export default class App extends Component{
           
           <Modal
           visible={this.state.isShowPiano}
-          >    
-          <TouchableHighlight
-            onPress={this.showPiano}
-            underlayColor='#a7b11c'
-            style={styles.homeWrapper}
-            >
+          > 
+          <View style={styles.header}>
+            <TouchableHighlight
+              onPress={this.closePiano}
+              underlayColor='#a7b11c'
+              style={styles.homeWrapper}
+              >
               <Image
               style={styles.home}
               source={require('./img/home.png')}></Image>
-            </TouchableHighlight>
-           <Record/>
+             </TouchableHighlight>
+              <TouchableHighlight
+              onPress={this.switchPiano}
+              underlayColor='#a7b11c'
+              style={styles.checkWrapper}
+              >
+              <Image
+              style={styles.home}
+              source={require('./img/check.png')}></Image>
+             </TouchableHighlight>
+          </View>
            <View
             style={styles.pianoWrapper}>
                 <Piano
                 onPlayNoteInput={this.onPlay}
-                onStopNoteInput={this.onPlay}
+                onStopNoteInput={this.onEnd}
                 firstNote='c2'
                 lastNote='e3'/>
                 <Piano
                 onPlayNoteInput={this.onPlay}
-                onStopNoteInput={this.onPlay}
+                onStopNoteInput={this.onEnd}
                 firstNote='c3'
                 lastNote='e4'/>
                 <Piano
                 onPlayNoteInput={this.onPlay}
-                onStopNoteInput={this.onPlay}
+                onStopNoteInput={this.onEnd}
                 firstNote='c4'
                 lastNote='e5'/>
                 <Piano
                 onPlayNoteInput={this.onPlay}
-                onStopNoteInput={this.onPlay}
+                onStopNoteInput={this.onEnd}
                 firstNote='c5'
                 lastNote='e6'/>
             </View>
@@ -210,31 +305,52 @@ export default class App extends Component{
 
           <Modal
           visible={this.state.isShowAudio}>     
-             
-              <TouchableHighlight
-            onPress={this.showAudio}
-            underlayColor='#a7b11c'
-            style={styles.homeWrapper}
-            >
+             <View style={styles.header}>
+            <TouchableHighlight
+              onPress={this.closeAudio}
+              underlayColor='#a7b11c'
+              style={styles.homeWrapper}
+              >
               <Image
               style={styles.home}
               source={require('./img/home.png')}></Image>
-            </TouchableHighlight>
+             </TouchableHighlight>
+              <TouchableHighlight
+              onPress={this.switchAudio}
+              underlayColor='#a7b11c'
+              style={styles.checkWrapper}
+              >
+              <Image
+              style={styles.home}
+              source={require('./img/check.png')}></Image>
+             </TouchableHighlight>
+          </View>
             <Audio />
           </Modal>
 
           <Modal
           visible={this.state.isShowVideo}>     
              
-              <TouchableHighlight
-            onPress={this.showVideo}
-            underlayColor='#a7b11c'
-            style={styles.homeWrapper}
-            >
+             <View style={styles.header}>
+            <TouchableHighlight
+              onPress={this.closeVideo}
+              underlayColor='#a7b11c'
+              style={styles.homeWrapper}
+              >
               <Image
               style={styles.home}
               source={require('./img/home.png')}></Image>
-            </TouchableHighlight>
+             </TouchableHighlight>
+              <TouchableHighlight
+              onPress={this.switchVideo}
+              underlayColor='#a7b11c'
+              style={styles.checkWrapper}
+              >
+              <Image
+              style={styles.home}
+              source={require('./img/check.png')}></Image>
+             </TouchableHighlight>
+          </View>
             <Video />
           </Modal>
       </>
@@ -254,6 +370,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#555555'
   },
+  header:{
+    flexDirection:'row',
+    backgroundColor:'#fdf2dc',
+    paddingLeft:20,
+    paddingRight:20,
+    paddingTop:20,
+    alignContent:'space-between'
+  },
   upWrapper:{
     flexDirection:'row',
     flex:11,
@@ -262,9 +386,9 @@ const styles = StyleSheet.create({
   musics:{
       flex:2,
       justifyContent:'space-around',
-      paddingBottom:100,
+      paddingBottom:35,
       paddingTop:60,
-      marginLeft:-30
+      marginLeft:-28
   },
   buttonsWrapper :{
     alignContent:'center',
@@ -327,8 +451,14 @@ const styles = StyleSheet.create({
     width:60,
     height:60,
     backgroundColor:'#985978',
-    justifyContent:'center',
-    margin:20,
+    margin:10,
+    borderRadius:20,
+  },
+  checkWrapper:{
+    width:60,
+    height:60,
+    backgroundColor:'#985978',
+    margin:10,
     borderRadius:20,
   },
   home:{
@@ -336,6 +466,22 @@ const styles = StyleSheet.create({
     width:40,
     height:40,
     alignSelf:'center',
+  },
+  slider:{
+    width:280,
+    height:5,
+    alignSelf:'center',
+  },
+  randText:{
+    color:'#555555',
+    fontSize:15,
+    fontWeight:"bold",
+    alignSelf:'center',
+  },
+  randomWrapper:{
+    flexDirection:'row',
+    padding:20,
+    height:5,
   }
 });
 
