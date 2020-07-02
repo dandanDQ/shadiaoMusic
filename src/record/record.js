@@ -34,6 +34,8 @@ export default class Record extends Component{
               content: '',
               aPath: '',
             },
+
+            
         };
 
         this.prepareRecordingPath = this.prepareRecordingPath.bind(this);     //执行录音的方法
@@ -197,7 +199,7 @@ export default class Record extends Component{
 //        this.setState({currentTime: Math.floor(data.currentTime)});
         this.setState({currentTime: Math.floor(data.currentTime), audioAsBase64: {amplitude: data.amplitude}});
         this.state.amp.push(this.state.audioAsBase64.amplitude);
-        console.log(this.state.amp);
+        console.log("??",this.state.amp);
       };
 
       AudioRecorder.onFinished = (data) => {
@@ -266,16 +268,16 @@ export default class Record extends Component{
 
 const styles = StyleSheet.create({
   container:{
+    backgroundColor:'#fdf2dc',
     flexDirection:'row',
-    alignSelf:'center',
+    alignSelf:'stretch',
+    justifyContent:'center'
   },
   recorderWrapper:{
-    backgroundColor:'#fdf2dc',
+    backgroundColor:'#ffffff',
     alignSelf:'stretch',
-    borderRadius:40,
+    borderRadius:20,
     margin:10
-
-
   },
   icon :{
     margin:10,

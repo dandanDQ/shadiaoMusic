@@ -54,7 +54,7 @@ c4到e5，对应60到76
 c5到e6，对应72到88
    位置：src/app.js onPlay函数，根据传入midi值播放音乐，可尝试使用genMusic.genMusic
 
-- [ ] 钢琴记录（先外录
+- [x] 钢琴记录
 
 - [x] 将摄像改为拍照，获取图片文件
     位置：src/video/camera.js和src/video/video.js
@@ -73,6 +73,7 @@ c5到e6，对应72到88
    需要在npm install后用 shadiaoMusic\src 目录下的 AudioRecorderManager.java替换
    shadiaoMusic\node_modules\react-native-audio\android\src\main\java\com\rnim\rn\audio目录下的同名文件
 
+- [x] 调节节奏随机性和音乐速度的滑动条
 
 ## 使用说明
 
