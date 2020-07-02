@@ -28,9 +28,10 @@ export default class Record extends Component{
             audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac',          //路径下的文件名
             hasPermission: undefined,
             amp: [],
+            audioRes: [],
 
             audioAsBase64: {
-              amplitude: 0.0,
+              amplitude: 0,
               content: '',
               aPath: '',
             },
@@ -38,10 +39,12 @@ export default class Record extends Component{
 
         this.prepareRecordingPath = this.prepareRecordingPath.bind(this);     //执行录音的方法
         this.checkPermission = this.checkPermission.bind(this);               //检测是否授权
-        this.record = this.record.bind(this);                                 //录音
+        this.record = this.record.bind(this);                                 //录音saveAudio
         this.stop = this.stop.bind(this);                                     //停止
         this.play = this.play.bind(this);                                     //播放
         this.pause = this.pause.bind(this);                                   //暂停
+        this.saveAudio = this.saveAudio.bind(this);                           //传出数据
+
         this.finishRecording = this.finishRecording.bind(this);
       }
 
@@ -68,87 +71,80 @@ export default class Record extends Component{
     };
 
     return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, rationale)
-      .then((result) => {
+        .then((result) => {
         // alert(result);     //结果: granted ,    PermissionsAndroid.RESULTS.GRANTED 也等于 granted
-        return (result === true || PermissionsAndroid.RESULTS.GRANTED)
-      })
+            return (result === true || PermissionsAndroid.RESULTS.GRANTED)
+        })
     }
 
     async record() {
         // 如果正在录音
         if (this.state.recording) {
-          alert('正在录音中!');
-          return;
+            alert('正在录音中!');
+            return;
         }
 
         //如果没有获取权限
         if (!this.state.hasPermission) {
-          alert('没有获取录音权限!');
-          return;
+            alert('没有获取录音权限!');
+            return;
         }
 
         //如果暂停获取停止了录音
         if(this.state.stoppedRecording){
-          this.prepareRecordingPath(this.state.audioPath);
+            this.prepareRecordingPath(this.state.audioPath);
         }
 
-        this.setState({recording: true});
+        this.setState({pausedRecording: false, recording: true});
         if(this.state.pausedRecording){
             try {
                 await AudioRecorder.resumeRecording();
-              } catch (error) {
+            } catch (error) {
                 console.error(error);
             }
         }
         else{
             try {
                 await AudioRecorder.startRecording();
-              } catch (error) {
+            } catch (error) {
                 console.error(error);
             }
         }
     }
 
     async pause() {
-    if (!this.state.recording) {
-        alert('没有录音, 无需停止!');
-        return;
-      }
+        if (!this.state.recording) {
+            alert('没有录音, 无需停止!');
+            return;
+        }
+        this.setState({pausedRecording:  true, recording: false});
 
-      this.setState({pausedRecording:  true, recording: false});
-
-      try {
-        await AudioRecorder.pauseRecording();
-        // 在安卓中, 暂停就等于停止
-//        if (Platform.OS === 'android') {
-//          const filePath = await AudioRecorder.stopRecording();
-//          this.finishRecording(true, filePath);
-//          return filePath;
-//        }
-      } catch (error) {
-        console.error(error);
-      }
+        try {
+            await AudioRecorder.pauseRecording();
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     async stop() {
-    // 如果没有在录音
-    if (!this.state.recording&&!this.state.pausedRecording) {
-      alert('没有录音, 无需停止!');
-      return;
-    }
+        // 如果没有在录音
+        if (!this.state.recording&&!this.state.pausedRecording) {
+            alert('没有录音, 无需停止!');
+            return;
+        }
 
-    this.setState({pausedRecording: false,stoppedRecording: true, recording: false});
+        this.setState({pausedRecording: false, stoppedRecording: true, recording: false});
 
-    try {
-      const filePath = await AudioRecorder.stopRecording();
-      console.log(filePath);
-      if (Platform.OS === 'android') {
-        this.finishRecording(true, filePath);
-      }
-      return filePath;
-    } catch (error) {
-      console.error(error);
-    }
+        try {
+            const filePath = await AudioRecorder.stopRecording();
+            console.log(filePath);
+            if (Platform.OS === 'android') {
+            this.finishRecording(true, filePath);
+        }
+            return filePath;
+        } catch (error) {
+            console.error(error);
+        }
 
     }
 
@@ -183,32 +179,59 @@ export default class Record extends Component{
       console.log(`Finished recording of duration ${this.state.currentTime} seconds at path: ${filePath}`);
     }
 
-    componentDidMount () {
-
-    // 页面加载完成后获取权限
-    this.checkPermission().then((hasPermission) => {
-      this.setState({ hasPermission });
-
-      //如果未授权, 则执行下面的代码
-      if (!hasPermission) return;
-      this.prepareRecordingPath(this.state.audioPath);
-
-      AudioRecorder.onProgress = (data) => {
-//        this.setState({currentTime: Math.floor(data.currentTime)});
-        this.setState({currentTime: Math.floor(data.currentTime), audioAsBase64: {amplitude: data.amplitude}});
-        this.state.amp.push(this.state.audioAsBase64.amplitude);
-        console.log(this.state.amp);
-      };
-
-      AudioRecorder.onFinished = (data) => {
-        if (Platform.OS === 'ios') {
-          this.finishRecording(data.status === "OK", data.audioFileURL);
+    saveAudio(){
+        let sec = this.state.amp;
+        var tmp = [];
+        var max = 0, min = 90;
+        let stride = sec.length/20.0;
+        if(sec.length <20) stride = 1;
+        for(let i=0; i+stride<sec.length; i+= stride){
+            let sum = 0;
+            for(let j=parseInt(i); j<i+stride; j++){
+                sum += sec[j];
+            }
+            sum /= parseInt(i+stride-parseInt(i)+1);
+            console.log(sum);
+            if(sum>max) max = sum;
+            if(sum<min) min = sum;
+//            console.log(sum);
+            tmp.push(sum);
         }
-        this.setState({audioAsBase64: {content: data.base64}});
-//        console.log(this.state.audioAsBase64.content);
-      };
+//        console.log("resssssssss");
+        let mid = (max + min)/2, w = (max - min)/1.5;
+        for(let i=0; i<tmp.length; i++){
+            tmp[i] = (tmp[i] - mid)/w;
+//            console.log(tmp[i]);
+            this.state.audioRes.push(tmp[i]);
+        }
+//        console.log(this.state.audioRes);
+    }
 
-    })
+    componentDidMount () {
+        // 页面加载完成后获取权限
+        this.checkPermission().then((hasPermission) => {
+            this.setState({ hasPermission });
+
+            //如果未授权, 则执行下面的代码
+            if (!hasPermission) return;
+            this.prepareRecordingPath(this.state.audioPath);
+
+            AudioRecorder.onProgress = (data) => {
+            //        this.setState({currentTime: Math.floor(data.currentTime)});
+                this.setState({currentTime: Math.floor(data.currentTime), audioAsBase64: {amplitude: data.amplitude}});
+                this.state.amp.push(data.amplitude);
+//                console.log(this.state.amp);
+            };
+
+            AudioRecorder.onFinished = (data) => {
+                if (Platform.OS === 'ios') {
+                  this.finishRecording(data.status === "OK", data.audioFileURL);
+                }
+                this.setState({audioAsBase64: {content: data.base64}});
+//                this.saveAudio();
+            };
+
+        })
     // console.log(this.props.navigator)
     // console.log(audioPath)
     }
