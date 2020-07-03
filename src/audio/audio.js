@@ -1,6 +1,7 @@
 import {AudioRecorder, AudioUtils} from 'react-native-audio'
 import Sound from 'react-native-sound';
 import React,{Component}  from 'react';
+import GenMusic from '../genMusic/genMusic'
 
 import {
   SafeAreaView,
@@ -14,6 +15,7 @@ import {
   Button,
   PermissionsAndroid,
 } from 'react-native';
+const genMusic = new GenMusic('ddq')
 
 
 export default class Audio extends Component{
@@ -28,7 +30,7 @@ export default class Audio extends Component{
             audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac',          //路径下的文件名
             hasPermission: undefined,
             amp: [],
-            audioRes: [50,52,53,54,55,56],
+            audioRes: [],
 
             audioAsBase64: {
               amplitude: 0,
@@ -62,7 +64,7 @@ export default class Audio extends Component{
 
     }
 
-    //通过 this.props.getAudiooMidis(this.state.audioRes)将结果传回app.js
+    //通过 this.props.getAudioMidis(this.state.audioRes)将结果传回app.js
 
     checkPermission() {
     if (Platform.OS !== 'android') {
@@ -98,6 +100,16 @@ export default class Audio extends Component{
         if(this.state.stoppedRecording){
             this.prepareRecordingPath(this.state.audioPath);
         }
+
+
+        //111
+        this.setState({audioRes:[]})
+        let resAudio=[];
+        for(let j=0;j<20;j++){
+          let audio=genMusic.getNote(37,87)
+          resAudio.push(audio)
+        }
+        this.setState({audioRes:resAudio})
 
         this.setState({pausedRecording: false, recording: true});
         if(this.state.pausedRecording){
@@ -145,6 +157,9 @@ export default class Audio extends Component{
             if (Platform.OS === 'android') {
             this.finishRecording(true, filePath);
             }
+            //111
+            //在这里调用函数返回数组
+            this.props.getAudioMidis(this.state.audioRes)
             alert("成功完成录音！\n时长"+this.state.currentTime+"秒");
             return filePath;
         } catch (error) {

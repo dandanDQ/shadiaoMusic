@@ -79,16 +79,14 @@ export default class App extends Component{
 
   checkAudio = ()=>{
     this.setState({isShowAudio: !this.state.isShowAudio})
-    alert("已获取音频音乐片段")
+    
   }
   checkVideo = ()=>{
     this.setState({isShowVideo: !this.state.isShowVideo})
-    alert("已获取图片音乐片段")
   }
   closePiano = ()=>{
     this.setState({isShowPiano: !this.state.isShowPiano})
     this.setState({isPiano:false})
-    this.setState({pianoMidis:[]})
     alert("保留已有钢琴片段，返回主页")
   }
 
@@ -112,12 +110,14 @@ export default class App extends Component{
     this.setState({videoMidis:photoRes})
     console.log("相机数组",photoRes)
     this.setState({isVideo:true})
+    alert("已获取图片音乐片段")
   }
 
-  getAudiooMidis = (audioRes)=> {
+  getAudioMidis = (audioRes)=> {
     this.setState({audioMidis:audioRes})
     console.log("音频数组",audioRes)
     this.setState({isAudio:true})
+    alert("已获取音频音乐片段")
   }
 
   mergeMusic = ()=> {
@@ -404,7 +404,7 @@ export default class App extends Component{
               source={require('./img/check.png')}></Image>
              </TouchableHighlight>
           </View>
-            <Audio getAudiooMidis={this.getAudiooMidis.bind(this)}/>
+            <Audio getAudioMidis={this.getAudioMidis.bind(this)}/>
           </Modal>
 
           <Modal
