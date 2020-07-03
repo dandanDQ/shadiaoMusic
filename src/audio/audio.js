@@ -62,6 +62,8 @@ export default class Audio extends Component{
 
     }
 
+    //通过 this.props.getAudiooMidis(this.state.audioRes)将结果传回app.js
+
     checkPermission() {
     if (Platform.OS !== 'android') {
       return Promise.resolve(true);

@@ -50,7 +50,7 @@ export default class GenMusic {
     //getFile函数用于获取音频文件，
     getFile(midi) {
         let file = '';
-        console.log("is getting file")
+        console.log("in genMusic getFile:", midi)
         switch (midi) {
             case 36:
                 {

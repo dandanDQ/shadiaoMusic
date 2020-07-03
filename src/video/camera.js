@@ -56,7 +56,6 @@ export default class CameraScreen extends PureComponent {
             cropping: true,
             includeBase64:true
         }).then(image => {
-//            console.log(image);
             tt.setState({haveGottenImage: true, photoAsBase64: { content: image.data, isPhotoPreview: false, photoPath: image.path }});
             this.savePicture();
             alert("拍照成功！\n");
@@ -70,7 +69,6 @@ export default class CameraScreen extends PureComponent {
             cropping: true,
             includeBase64:true
         }).then(image => {
-//            console.log(image);
             tt.setState({haveGottenImage: true, photoAsBase64: { content: image.data, isPhotoPreview: false, photoPath: image.path }});
             this.savePicture();
             alert("成功选取照片！\n");
@@ -80,7 +78,6 @@ export default class CameraScreen extends PureComponent {
     //TODO: 跳转生成
     savePicture(){
         let pix = Base64.toUint8Array(this.state.photoAsBase64.content);
-//        console.log(pix.length);
         var tmp = [];
         let stride = pix.length/20.0;
         if(pix.length <20) stride = 1;
@@ -93,18 +90,14 @@ export default class CameraScreen extends PureComponent {
             sum /= parseInt(i+stride-parseInt(i)+1);
             if(sum>max) max = sum;
             if(sum<min) min = sum;
-            console.log(sum);
             tmp.push(sum);
         }
-//        console.log(max,"    ",min);
         let mid = (max + min)/2, w = max - min;
         for(let i=0; i<tmp.length; i++){
             tmp[i] = parseInt((tmp[i] - min)/w*52+36);
-            console.log(tmp[i]);
             this.state.photoRes.push(tmp[i]);
         }
         this.props.getVideoMidis(this.state.photoRes)
-//        console.log(this.state.photoRes);
     }
 
 }

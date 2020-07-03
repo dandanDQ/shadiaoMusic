@@ -47,8 +47,8 @@ export default class App extends Component{
       isShowAudio:false,
       isShowDrum:false,
       isShowVideo:false,
-      rand:0.5,
-      time:1.0,
+      rand:10,
+      time:0.1,
       pianoMidis:[],//用户弹琴记录
       videoMidis:[],
       audioMidis:[],
@@ -98,11 +98,17 @@ export default class App extends Component{
     this.setState({videoMidis:photoRes})
     console.log("相机数组",photoRes)
   }
+
+  getAudiooMidis = (audioRes)=> {
+    this.setState({audioMidis:audioRes})
+    console.log("音频数组",audioRes)
+  }
+
   genMusic = ()=> {
     let tt=this;
-    for(let i=0;i<tt.state.pianoMidis.length;i++){
+    for(let i=0;i<tt.state.videoMidis.length;i++){
       setTimeout(function(){
-        let file = genMusic.getFile(tt.state.pianoMidis[i])
+        let file = genMusic.getFile(tt.state.videoMidis[i])
         var whoosh = new Sound(file, (error) => {
           if (error) {
             console.log('failed to load the sound', error);
@@ -241,6 +247,7 @@ export default class App extends Component{
                 style={styles.slider}
                 minimumValue={0}
                 maximumValue={20}
+                value={10}
                 minimumTrackTintColor="#FFFFFF"
                 maximumTrackTintColor="#000000"
                 step={1}
@@ -253,6 +260,7 @@ export default class App extends Component{
                 style={styles.slider}
                 minimumValue={1}
                 maximumValue={20}
+                value={10}
                 minimumTrackTintColor="#FFFFFF"
                 maximumTrackTintColor="#000000"
                 step={1}
@@ -353,7 +361,7 @@ export default class App extends Component{
               source={require('./img/check.png')}></Image>
              </TouchableHighlight>
           </View>
-            <Audio />
+            <Audio getAudiooMidis={this.getAudiooMidis.bind(this)}/>
           </Modal>
 
           <Modal
