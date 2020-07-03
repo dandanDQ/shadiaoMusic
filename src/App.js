@@ -53,6 +53,7 @@ export default class App extends Component{
       videoMidis:[],
       audioMidis:[],
       resMidis:[],
+      resMidis:[],
       isPiano:false,//是否钢琴录音
       isAudio:false,
       isVideo:false,
@@ -64,61 +65,94 @@ export default class App extends Component{
     this.setState({isShowPiano: !this.state.isShowPiano})
     if(this.state.pianoMidis.length){
       this.setState({isPiano:true})
+      alert("已获取钢琴音乐片段")
     }
   }
+
+
   switchAudio = ()=>{
     this.setState({isShowAudio: !this.state.isShowAudio})
-    this.setState({isAudio:true})
   }
   switchVideo = ()=>{
     this.setState({isShowVideo: !this.state.isShowVideo})
-    this.setState({isVideo:true})
   }
-  
+
+  checkAudio = ()=>{
+    this.setState({isShowAudio: !this.state.isShowAudio})
+    alert("已获取音频音乐片段")
+  }
+  checkVideo = ()=>{
+    this.setState({isShowVideo: !this.state.isShowVideo})
+    alert("已获取图片音乐片段")
+  }
   closePiano = ()=>{
     this.setState({isShowPiano: !this.state.isShowPiano})
     this.setState({isPiano:false})
     this.setState({pianoMidis:[]})
+    alert("保留已有钢琴片段，返回主页")
   }
 
   closeAudio = ()=>{
     this.setState({isShowAudio: !this.state.isShowAudio})
     this.setState({isAudio:false})
+    alert("清除已有音频片段，返回主页")
   }
   closeVideo = ()=>{
     this.setState({isShowVideo: !this.state.isShowVideo})
     this.setState({isVideo:false})
+    alert("清除已有图片，返回主页")
   }
   clearPiano = ()=>{
     this.setState({isPiano:false})
     this.setState({pianoMidis:[]})
+    alert("清空已有钢琴音乐")
   }
 
   getVideoMidis = (photoRes)=> {
     this.setState({videoMidis:photoRes})
     console.log("相机数组",photoRes)
+    this.setState({isVideo:true})
   }
 
   getAudiooMidis = (audioRes)=> {
     this.setState({audioMidis:audioRes})
     console.log("音频数组",audioRes)
+    this.setState({isAudio:true})
   }
 
-  genMusic = ()=> {
+  mergeMusic = ()=> {
+
     let tt=this;
-    for(let i=0;i<tt.state.videoMidis.length;i++){
-      setTimeout(function(){
-        let file = genMusic.getFile(tt.state.videoMidis[i])
-        var whoosh = new Sound(file, (error) => {
-          if (error) {
-            console.log('failed to load the sound', error);
-            return;
-          }
-          whoosh.play(()=>{
-            whoosh.release()
+    
+    if(tt.state.videoMidis.length||tt.state.audioMidis.length||tt.state.pianoMidis.length){
+      let res = tt.state.pianoMidis.splice(0).concat(tt.state.videoMidis).concat(tt.state.audioMidis)
+      tt.setState({resMidis:res})
+      alert("音乐合成成功")
+    }else{
+      alert("无音乐可合成，请使用拍照、录音、钢琴等生成音乐")
+    }
+    
+  }
+    
+  playMusic = ()=> {
+    let tt=this;
+    if(tt.state.resMidis.length){
+      for(let i=0;i<tt.state.resMidis.length;i++){
+        setTimeout(function(){
+          let file = genMusic.getFile(tt.state.resMidis[i])
+          var whoosh = new Sound(file, (error) => {
+            if (error) {
+              console.log('failed to load the sound', error);
+              return;
+            }
+            whoosh.play(()=>{
+              whoosh.release()
+            });
           });
-        });
-      },tt.state.time*1000*(Math.random() * tt.state.rand*0.2 + 1)*i) //速度在1-5之间调整
+        },tt.state.time*1000*(Math.random() * tt.state.rand*0.2 + 1)*i) //速度在1-5之间调整
+    }
+  }else{
+      alert("请先合成音乐")
     }
     
     // for(let i=1;i<20;i++){
@@ -268,8 +302,17 @@ export default class App extends Component{
                 />
               </View>
               <View style={styles.playWrapper}>
+              <TouchableHighlight
+                onPress={this.mergeMusic}
+                underlayColor='#a7b11c'
+                style={styles.genMusic}
+                >
+                  <Image
+                  style={styles.icon}
+                  source={require('./img/merge.png')}></Image>
+                </TouchableHighlight>
                 <TouchableHighlight
-                onPress={this.genMusic}
+                onPress={this.playMusic}
                 underlayColor='#a7b11c'
                 style={styles.genMusic}
                 >
@@ -301,7 +344,7 @@ export default class App extends Component{
               >
               <Image
               style={styles.home}
-              source={require('./img/check.png')}></Image>
+              source={require('./img/add.png')}></Image>
              </TouchableHighlight>
              <TouchableHighlight
               onPress={this.clearPiano}
@@ -352,7 +395,7 @@ export default class App extends Component{
               source={require('./img/no.png')}></Image>
              </TouchableHighlight>
               <TouchableHighlight
-              onPress={this.switchAudio}
+              onPress={this.checkAudio}
               underlayColor='#a7b11c'
               style={styles.checkWrapper}
               >
@@ -378,7 +421,7 @@ export default class App extends Component{
               source={require('./img/no.png')}></Image>
              </TouchableHighlight>
               <TouchableHighlight
-              onPress={this.switchVideo}
+              onPress={this.checkVideo}
               underlayColor='#a7b11c'
               style={styles.checkWrapper}
               >
@@ -455,17 +498,19 @@ const styles = StyleSheet.create({
     borderRadius:20,
   },
   genMusic:{
-    width:120,
-    height:120,
+    width:100,
+    height:100,
     backgroundColor:'#fdf2dc',
     justifyContent:'center',
     borderRadius:20,
+    margin:20,
   },
   playWrapper:{
     backgroundColor:'#a7b11c',
     flex:4,
     alignItems:'center',
-    justifyContent:'center'
+    justifyContent:'center',
+    flexDirection:'row'
   },
   music:{
     width:220,
