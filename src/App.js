@@ -65,6 +65,7 @@ export default class App extends Component{
     this.setState({isShowPiano: !this.state.isShowPiano})
     if(this.state.pianoMidis.length){
       this.setState({isPiano:true})
+      this.setState({resMidis:[]})
       alert("已获取钢琴音乐片段")
     }
   }
@@ -110,6 +111,7 @@ export default class App extends Component{
     this.setState({videoMidis:photoRes})
     console.log("相机数组",photoRes)
     this.setState({isVideo:true})
+    this.setState({resMidis:[]})
     alert("已获取图片音乐片段")
   }
 
@@ -117,6 +119,7 @@ export default class App extends Component{
     this.setState({audioMidis:audioRes})
     console.log("音频数组",audioRes)
     this.setState({isAudio:true})
+    this.setState({resMidis:[]})
     alert("已获取音频音乐片段")
   }
 
