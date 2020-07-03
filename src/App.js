@@ -98,7 +98,9 @@ export default class App extends Component{
             console.log('failed to load the sound', error);
             return;
           }
-          whoosh.play();
+          whoosh.play(()=>{
+            whoosh.release()
+          });
         });
       },tt.state.time*1000*(Math.random() * tt.state.rand*0.2 + 1)*i) //速度在1-5之间调整
     }
