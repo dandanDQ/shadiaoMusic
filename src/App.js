@@ -86,6 +86,10 @@ export default class App extends Component{
     this.setState({isShowVideo: !this.state.isShowVideo})
     this.setState({isVideo:false})
   }
+  clearPiano = ()=>{
+    this.setState({isPiano:false})
+    this.setState({pianoMidis:[]})
+  }
 
 
   genMusic = ()=> {
@@ -285,6 +289,15 @@ export default class App extends Component{
               style={styles.home}
               source={require('./img/check.png')}></Image>
              </TouchableHighlight>
+             <TouchableHighlight
+              onPress={this.clearPiano}
+              underlayColor='#a7b11c'
+              style={styles.homeWrapper}
+              >
+              <Image
+              style={styles.home}
+              source={require('./img/reset.png')}></Image>
+             </TouchableHighlight>
           </View>
            <View
             style={styles.pianoWrapper}>
@@ -322,7 +335,7 @@ export default class App extends Component{
               >
               <Image
               style={styles.home}
-              source={require('./img/home.png')}></Image>
+              source={require('./img/no.png')}></Image>
              </TouchableHighlight>
               <TouchableHighlight
               onPress={this.switchAudio}
@@ -348,7 +361,7 @@ export default class App extends Component{
               >
               <Image
               style={styles.home}
-              source={require('./img/home.png')}></Image>
+              source={require('./img/no.png')}></Image>
              </TouchableHighlight>
               <TouchableHighlight
               onPress={this.switchVideo}
