@@ -23,6 +23,7 @@ export default class GenMusic {
                     } else {
                         console.log('playback failed due to audio decoding errors');
                     }
+                    playNote.release();
                 })
             })
         })
