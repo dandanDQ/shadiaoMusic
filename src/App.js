@@ -183,7 +183,7 @@ export default class App extends Component{
       <>
           <View style={styles.view}>
             <View style={styles.upWrapper}>
-              <View style={styles.buttonsWrapper}>
+                <View style={styles.itemWrapper}>
                   <TouchableHighlight
                   onPress={this.switchVideo}
                   underlayColor='#a7b11c'
@@ -193,7 +193,10 @@ export default class App extends Component{
                     style={styles.icon}
                     source={require('./img/video.png')}></Image>
                   </TouchableHighlight>
+                  {video}
+              </View>
 
+              <View style={styles.itemWrapper}>
                   <TouchableHighlight
                   onPress={this.switchAudio}
                   underlayColor='#a7b11c'
@@ -203,7 +206,10 @@ export default class App extends Component{
                     style={styles.icon}
                     source={require('./img/mic.png')}></Image>
                   </TouchableHighlight>
+                  {audio}
+                  </View>
 
+                  <View style={styles.itemWrapper}>
                   <TouchableHighlight
                   onPress={this.switchPiano}
                   underlayColor='#a7b11c'
@@ -213,14 +219,10 @@ export default class App extends Component{
                     style={styles.icon}
                     source={require('./img/piano.png')}></Image>
                   </TouchableHighlight>
-                </View>
-
-                <View style={styles.musics}>
-                    {video}
-                    {audio}
-                    {piano}
-                </View>
+                  {piano}
+                  </View>
               </View>
+
               <View style={styles.randomWrapper}>
                 <Text style={styles.randText}>Random</Text>
                 <Slider
@@ -384,16 +386,9 @@ const styles = StyleSheet.create({
     alignContent:'space-between'
   },
   upWrapper:{
-    flexDirection:'row',
+    flexDirection:'column',
+    marginTop:50,
     flex:11,
-
-  },
-  musics:{
-      flex:2,
-      justifyContent:'space-around',
-      paddingBottom:35,
-      paddingTop:60,
-      marginLeft:-28
   },
   buttonsWrapper :{
     alignContent:'center',
@@ -413,7 +408,6 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     borderRadius:20,
     margin:20,
-    marginTop:80
   },
   audio:{
     width:80,
@@ -447,6 +441,7 @@ const styles = StyleSheet.create({
   music:{
     width:220,
     height:80,
+    marginLeft:-18
   },
   pianoWrapper:{
     backgroundColor:'red',
@@ -486,7 +481,13 @@ const styles = StyleSheet.create({
   randomWrapper:{
     flexDirection:'row',
     padding:20,
-    height:5,
+  },
+  itemWrapper:{
+    backgroundColor:'#fdf2dc',
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+    marginLeft:-5,
   }
 });
 
