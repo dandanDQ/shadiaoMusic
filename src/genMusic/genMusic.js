@@ -7,6 +7,7 @@ export default class GenMusic {
         this.name = name
     }
 
+
     //传入数组，播放音乐
     genMusic(midis) {
         midis.forEach((midi, index) => {
@@ -41,14 +42,14 @@ export default class GenMusic {
         }
     }
 
+
+
     // TODO 3.
 
     //getFile函数用于获取音频文件，
     getFile(midi) {
         let file = '';
-//        let name = 12;
-        let reqUrl=`/${midi}.mp3`;
-//        file = require(`../piano/midi/${name}.mp3`);
+        console.log("is getting file")
         switch (midi) {
             case 36:
                 {

@@ -114,16 +114,21 @@ export default class App extends Component{
 
   onPlay = (note,midi)=>{
     console.log(note,"__",midi)
-    Sound.setCategory('Playback');
+    Sound.setCategory('MultiRoute');
 
     let file = genMusic.getFile(midi);
-    var whoosh = new Sound(file, (error) => {
+    var whoosh =  new Sound(file, (error) => {
       if (error) {
         console.log('failed to load the sound', error);
         return;
       }
-      whoosh.play();
+      console.log("before play")
+      whoosh.play(()=>{
+        whoosh.release();
+      });
+      console.log("after play")
     });
+    
     }
 
     onEnd = (note,midi)=>{

@@ -9,13 +9,13 @@ import Key from './Key'
 
 import MidiNumbers from './MidiNumbers'
 
-class Piano extends Component {
+export default class Piano extends Component  {
     constructor(props){
         super(props);
         this.state = {
             noteRange: {
-              first: MidiNumbers.fromNote('c4'),
-              last: MidiNumbers.fromNote('e5')
+              first: MidiNumbers.fromNote(this.props.firstNote),
+              last: MidiNumbers.fromNote(this.props.lastNote)
             }
           }
     }
@@ -103,4 +103,3 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Piano
