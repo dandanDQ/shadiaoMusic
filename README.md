@@ -1,40 +1,61 @@
-shadiaoMusic
+# shadiaoMusic
 
-A android app to create music for fun.
+### 项目简介
+
+这是一个结合了多种交互方式、用于音乐生成的app。主界面中有三个入口，每个入口依照不同的方式生成音乐。
 
 
-### set up 
+<img src="./intro/main.jpg"/>
+<img src="./intro/main2.jpg"/>
+
+第一个入口，根据用户拍摄的照片，分块提取像素值，计算平均值，得到一个数组，经过映射后，与midi值相对应；第二个入口，根据用户录制的声音片段，计算一定时间间隔内的音量，得到一个数组，经过映射后，与midi值对应；第三个入口，根据用户弹奏钢琴的顺序，记录下琴键对应的midi值数组。
+
+
+<img src="./intro/photo.jpg"/>
+<img src="./intro/record.jpg"/>
+<img src="./intro/piano.jpg"/>
+
+用户在主界面上点击合成按钮后，会将这三个入口已有的音乐片段进行合并。点击播放，用户则可以听到合成后的音乐。
+主界面上还有调节音乐节奏随机性的random滑动条，调节音乐速度的rate滑动条。
+
+
+### 项目搭建
+如果你还没有搭建相关环境，请跳转至文末查看[环境搭建指南](#env)。
+
 ```
 npm run install
 npm run android
 ```
 
 
+### 项目目录结构
+
+- src
+    - audio //音频提取
+        - audio.js //音频主界面
+    - video //视频提取
+        - camera.js //相机组件
+        - video.js //视频主界面
+    - piano //钢琴
+        - Piano.js  //钢琴组件
+        - Key.js   //钢琴琴键
+        - MidiNumbers.js  //midi数字与音名对应
+    - genMusic
+        - genMusic.js  //传入数组生成音乐
+    - img    //存放图片资源
+
+
+### 协作开发过程记录
+
 #### 颜色值对应
 
-红：'#d93732'
-黄：'#f2af22'
-紫：'#985978'
-淡黄：'#fdf2dc'
-绿：'#a7b11c'
+- 红：'#d93732'
+- 黄：'#f2af22'
+- 紫：'#985978'
+- 淡黄：'#fdf2dc'
+- 绿：'#a7b11c'
 
 
-#### 项目目录结构
-
-src
-    audio //音频提取
-        audio.js //音频主界面
-    video //视频提取
-        camera.js //相机组件
-        video.js //视频主界面
-    record //录音
-        record.js //录音组件
-    piano //钢琴
-        Piano.js  //钢琴组件
-        Key.js   //钢琴琴键
-    genMusic
-        genMusic.js  //传入数组生成音乐
-    img    //存放图片资源
 
 
 
@@ -59,9 +80,9 @@ c5到e6，对应72到88
 - [x] 将摄像改为拍照，获取图片文件
     位置：src/video/camera.js和src/video/video.js
     图片文件现在在19行的数据里存储 暂时是base64的
-    82行部分的Imagepicker会调用系统相机，可以进行裁剪（看起来比较厉害）
+    Imagepicker会调用系统相机，可以进行裁剪
 
-- [ ] 图像的处理，根据某种规则生成notes数组（genMusic函数的参数），找一下处理图片的库
+- [x] 图像的处理，根据某种规则生成notes数组（genMusic函数的参数），找一下处理图片的库
     位置：camera.js 114行跳转生成
     opencv那个网页上的可装，但是用的时候会报错
     还有个react-native-opencv3目测可用但是还没试 （https://www.npmjs.com/package/react-native-opencv3）
@@ -75,17 +96,18 @@ c5到e6，对应72到88
 
 - [x] 调节节奏随机性和音乐速度的滑动条
 
-## 使用说明
+
+<div id="env">
+
+### 环境搭建指南
 
 **开发平台：** Windows
 **目标平台：** Android
 **搭建环境：** React-Native + Android Studio
 
-<font color=red>如果您已经搭建好了RN和AS的环境，请直接跳转到[编译并运行项目](#run)，这里很重要。</font>
+#### 安装依赖
 
-### 安装依赖
-
-#### Node, Python2, JDK
+##### Node, Python2, JDK
 建议直接使用搜索引擎搜索下载 Node 、Python2 和[Java SE Development Kit (JDK)](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 注意 Node 的版本应大于等于 12，Python 的版本必须为 2.x（不支持 3.x），而 JDK 的版本必须是 1.8（目前不支持 1.9 及更高版本，注意 1.8 版本官方也直接称 8 版本）。
 安装完 Node 后建议设置 npm 镜像（淘宝源）以加速后面的过程（或使用科学上网工具）。
@@ -97,7 +119,7 @@ npx nrm use taobao
 # 如果之后需要切换回官方源可使用
 npx nrm use npm
 ```
-#### Yarn
+##### Yarn
 [Yarn](http://yarnpkg.com)是 Facebook 提供的替代 npm 的工具，可以加速 node 模块的下载。
 
 ```
@@ -159,13 +181,13 @@ c:\Users\你的用户名\AppData\Local\Android\Sdk
 ```
 
 
-### 准备 Android 设备
+#### 准备 Android 设备
 你需要准备一台 Android 设备来运行 React Native Android 应用。这里所指的设备既可以是真机，也可以是模拟器。
 
-#### 使用 Android 真机
+##### 使用 Android 真机
 你也可以使用 Android 真机来代替模拟器进行开发，只需用 usb 数据线连接到电脑，然后遵照[在设备上运行](https://reactnative.cn/docs/running-on-device)这篇文档的说明操作即可。
 
-#### 使用 Android 模拟器
+##### 使用 Android 模拟器
 你可以使用 Android Studio 打开项目下的"android"目录，然后可以使用"AVD Manager"来查看可用的虚拟设备，它的图标看起来像下面这样：![image](https://cdn.jsdelivr.net/gh/reactnativecn/react-native-website@gh-pages/docs/assets/GettingStartedAndroidStudioAVD.png)
 
 如果你刚刚才安装 Android Studio，那么可能需要先创建一个虚拟设备。点击"Create Virtual Device..."，然后选择所需的设备类型并点击"Next"，然后选择Pie API Level 28 image.
@@ -175,7 +197,7 @@ c:\Users\你的用户名\AppData\Local\Android\Sdk
 然后点击"Next"和"Finish"来完成虚拟设备的创建。现在你应该可以点击虚拟设备旁的绿色三角按钮来启动它了，启动完后我们可以尝试运行应用。
 
 
-### 编译并运行项目
+#### 编译并运行项目
 <blockquote>
 <p>首先您需要将本项目clone到本地。</p>
 <p>进入项目目录后输入<code>npm install</code>命令</p>
