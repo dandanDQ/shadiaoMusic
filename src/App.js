@@ -32,7 +32,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import Audio from './audio/audio'
-import Video from './video/video'
+import CameraScreen from './video/camera'
 import GenMusic from './genMusic/genMusic'
 import Piano from './piano/Piano'
 import Slider from '@react-native-community/slider';
@@ -50,6 +50,9 @@ export default class App extends Component{
       rand:0.5,
       time:1.0,
       pianoMidis:[],//用户弹琴记录
+      videoMidis:[],
+      audioMidis:[],
+      resMidis:[],
       isPiano:false,//是否钢琴录音
       isAudio:false,
       isVideo:false,
@@ -91,7 +94,10 @@ export default class App extends Component{
     this.setState({pianoMidis:[]})
   }
 
-
+  getVideoMidis = (photoRes)=> {
+    this.setState({videoMidis:photoRes})
+    console.log("相机数组",photoRes)
+  }
   genMusic = ()=> {
     let tt=this;
     for(let i=0;i<tt.state.pianoMidis.length;i++){
@@ -373,7 +379,7 @@ export default class App extends Component{
               source={require('./img/check.png')}></Image>
              </TouchableHighlight>
           </View>
-            <Video />
+            <CameraScreen getVideoMidis={this.getVideoMidis.bind(this)}/>
           </Modal>
       </>
       );
