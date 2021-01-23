@@ -5,15 +5,15 @@
 这是一个结合了多种交互方式、用于音乐生成的app。主界面中有三个入口，每个入口依照不同的方式生成音乐。
 
 
-<img src="./intro/main.jpg"/>
-<img src="./intro/main2.jpg"/>
+<img src="./intro/main.jpg" width="200"/>
+<img src="./intro/main2.jpg" width="200"/>
 
 第一个入口，根据用户拍摄的照片，分块提取像素值，计算平均值，得到一个数组，经过映射后，与midi值相对应；第二个入口，根据用户录制的声音片段，计算一定时间间隔内的音量，得到一个数组，经过映射后，与midi值对应；第三个入口，根据用户弹奏钢琴的顺序，记录下琴键对应的midi值数组。
 
 
-<img src="./intro/photo.jpg"/>
-<img src="./intro/record.jpg"/>
-<img src="./intro/piano.jpg"/>
+<img src="./intro/photo.jpg" width="200"/>
+<img src="./intro/record.jpg" width="200"/>
+<img src="./intro/piano.jpg" width="200"/>
 
 用户在主界面上点击合成按钮后，会将这三个入口已有的音乐片段进行合并。点击播放，用户则可以听到合成后的音乐。
 主界面上还有调节音乐节奏随机性的random滑动条，调节音乐速度的rate滑动条。
